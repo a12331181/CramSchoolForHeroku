@@ -9,7 +9,6 @@ const userController = {
 
   signUp: (req, res) => {
     // 確認密碼
-    console.log(req.body)
     if(req.body.passwordCheck !== req.body.password){
       req.flash('error_messages', '兩次密碼輸入不同！')
       return res.redirect('/signup')
@@ -31,6 +30,21 @@ const userController = {
         }
       })    
     }
+  },
+
+  signInPage: (req, res) => {
+    return res.render('signin')
+  },
+
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/cramschool')
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 

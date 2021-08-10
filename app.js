@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const session = require('express-session')
+const passport = require('./config/passport')
 const app = express()
 const port = 3000
 
@@ -13,6 +14,10 @@ app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({extended: true}))
 // setup session and flash
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
+// setup passport
+app.use(passport.initialize())
+app.use(passport.session())
+// setup flash
 app.use(flash())
 
 app.use((req, res, next) => {
@@ -25,4 +30,4 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)
 })
 
-require('./routes')(app)
+require('./routes')(app, passport)
