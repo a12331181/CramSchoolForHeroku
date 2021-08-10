@@ -1,6 +1,6 @@
-module.exports = (app) => {
+const schoolController = require('../controllers/schoolController.js')
 
-  app.get('/', (req, res) => {
-    res.send('Hello World!')
-  })
+module.exports = app => {
+  app.get('/', (req, res) => res.redirect('/cramschool'))
+  app.get('/cramschool', schoolController.getSchoolIndexPage)
 }
