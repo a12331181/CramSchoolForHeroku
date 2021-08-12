@@ -27,6 +27,7 @@ module.exports = (app, passport) => {
   app.post('/admin/courses', authenticatedAdmin, adminController.postCourse)
   app.get('/admin/courses/:id', authenticatedAdmin, adminController.getCourse)
   app.get('/admin/courses/:id/edit', authenticatedAdmin, adminController.editCourse)
+  app.put('/admin/courses/:id', authenticatedAdmin, adminController.putCourse)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)

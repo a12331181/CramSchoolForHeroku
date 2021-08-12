@@ -37,7 +37,23 @@ const adminController = {
     return Course.findByPk(req.params.id, {raw:true}).then(course => {
       return res.render('admin/createcourse', { course: course } )
     })
-  }
+  },
+  putCourse: (req, res) => {
+    return Course.findByPk(req.params.id)
+      .then((course) => {
+        course.update({
+          name: req.body.name,
+          time: req.body.time,
+          type: req.body.type,
+          amounts: req.body.amounts,
+          price: req.body.price
+        })
+        .then((course) => {
+          req.flash('success_messages', 'course was successfully to update')
+          res.redirect('/admin/courses')
+        })
+      })
+  },
 }   
 
 module.exports = adminController

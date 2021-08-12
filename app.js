@@ -20,6 +20,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 // setup flash
 app.use(flash())
+app.use(methodOverride('_method'))
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
@@ -27,8 +28,6 @@ app.use((req, res, next) => {
   res.locals.user = req.user 
   next()
 })
-
-app.use(methodOverride('_method'))
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)

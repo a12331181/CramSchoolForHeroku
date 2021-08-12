@@ -1,7 +1,7 @@
-{{#if restaurant}}
-  <form action="/admin/courses/{{restaurant.id}}?_method=PUT" method="POST">
+{{#if course}}
+<form action="/admin/courses/{{course.id}}?_method=PUT" method="POST">
 {{else}}
-  <form action="/admin/courses" method="POST">
+<form action="/admin/courses" method="POST">
 {{/if}}
   <div class="form-group">
     <label for="name">課程名稱</label>
@@ -10,17 +10,15 @@
 
   <div class="form-group">
     <label for="time">上課時長</label>
-    <select class="form-control" name="time" id="time" value="{{course.time}}" required>
-      <option value="30">30分鐘</option>
+    <select class="form-control" name="time" id="time" value="{{course.time}}">
       <option value="60">60分鐘</option>
       <option value="90">90分鐘</option>
-      <option value="120">120分鐘</option>
     </select>
   </div>
 
   <div class="form-group">
     <label for="type">計費方式</label>
-    <select class="form-control" name="type" id="type" value="{{course.type}}" required>
+    <select class="form-control" name="type" id="type" value="{{course.type}}">
       <option value="依月計費">依月計費</option>
       <option value="依堂數計費">依堂數計費</option>
     </select>
@@ -28,16 +26,8 @@
   
   <div class="form-group">
     <label for="amounts">堂數</label>
-    <select class="form-control" name="amounts" id="amounts" value="{{course.amounts}}" required>
-      <option value="6">6</option>
-      <option value="8">8</option>
-      <option value="12">12</option>
-      <option value="16">16</option>
-      <option value="18">18</option>
-      <option value="24">24</option>
-      <option value="30">30</option>
-      <option value="0">不計堂數</option>
-    </select>
+    <input type="number" class="form-control" name="amounts" id="amounts" min="0" value="{{course.amounts}}" placeholder="輸入堂數" required>
+      required>
   </div>
 
   <div class="form-group">
