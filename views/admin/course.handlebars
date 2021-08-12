@@ -1,49 +1,17 @@
-<h1>資料管理後台</h1>
+<br />
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/cramschool">首頁</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/admin/courses">課程</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">教師清單</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">學生清單</a>
-  </li>
-</ul>
+<div class="card">
+  <h1 class="card-header">{{course.name}}</h1>
+  <div class="card-body">
+    <h5 class="card-text"><strong>上課時長 : </strong> {{course.time}} 分鐘</h5>
+    <h5 class="card-text"><strong>計費方式 : </strong> {{course.type}}</h5>
+    <h5 class="card-text"><strong>堂數 : </strong> {{course.amounts}} 堂/期</h5>
+    <h5 class="card-text"><strong>價格 : </strong> {{course.price}} 元</h5>
+  </div>
+</div>
+
+<hr>
 
 <br />
 <br />
-
-{{#each courses}}
-<ul class="list-group">
-  <li class="list-group-item d-flex justify-content-between align-items-center">
-    <h5>{{this.name}}</h5>
-    <div class="">
-      <button type="button" class="btn btn-link">
-        <a href="/admin/courses/{{this.id}}">
-          Show
-        </a>
-      </button>
-      <button type="button" class="btn btn-link">
-        <a href="/admin/courses/{{this.id}}/edit">
-          Edit
-        </a>
-      </button>
-      <form action="/admin/courses/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-        <button type="submit" class="btn btn-link">Delete</button>
-      </form>
-    </div>
-  </li>
-</ul>
-{{/each}}
-
-<br />
-<br />
-
-<a href='/admin/courses/create'>
-  <button type="button" class="btn btn-primary">New Course</button>
-</a>
+<a href="javascript:history.back()">回上一頁</a>

@@ -7,7 +7,7 @@ const adminController = {
   },
   getCourses : (req, res) => {
     return Course.findAll({raw: true}).then(courses =>{
-      return res.render('admin/course', { courses: courses })
+      return res.render('admin/courses', { courses: courses })
     })
   },
   getCreateCoursePage: (req, res) => {
@@ -25,6 +25,13 @@ const adminController = {
         req.flash('success_messages', 'Course was successfully created.')
         res.redirect('/admin/courses')
       })
+  },
+  getCourse: (req, res) => {
+    return Course.findByPk(req.params.id, {raw:true}).then(course => {
+      return res.render('admin/course', {
+        course: course
+      })
+    })
   }
 }   
 
