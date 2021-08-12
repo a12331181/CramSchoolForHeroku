@@ -32,6 +32,11 @@ const adminController = {
         course: course
       })
     })
+  },
+  editCourse: (req, res) => {
+    return Course.findByPk(req.params.id, {raw:true}).then(course => {
+      return res.render('admin/createcourse', { course: course } )
+    })
   }
 }   
 
