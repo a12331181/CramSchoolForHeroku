@@ -22,6 +22,10 @@ module.exports = (app, passport) => {
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)
 
+  app.get('/admin/courses', authenticatedAdmin, adminController.getCourses)
+  app.get('/admin/courses/create', authenticatedAdmin, adminController.getCreateCoursePage)
+  app.post('/admin/courses', authenticatedAdmin, adminController.postCourse)
+
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
 
