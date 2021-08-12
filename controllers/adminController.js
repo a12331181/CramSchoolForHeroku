@@ -54,6 +54,15 @@ const adminController = {
         })
       })
   },
+  deleteCourse: (req, res) => {
+    return Course.findByPk(req.params.id)
+      .then((course) => {
+        course.destroy()
+          .then((course) => {
+            res.redirect('/admin/courses')
+          })
+      })
+  }
 }   
 
 module.exports = adminController
