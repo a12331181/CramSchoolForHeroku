@@ -1,5 +1,6 @@
 const db = require('../models')
 const Course = db.Course
+const User = db.User
 
 const adminController = {
   getSchoolIndexPage: (req, res) => {
@@ -61,6 +62,23 @@ const adminController = {
           .then((course) => {
             res.redirect('/admin/courses')
           })
+      })
+  },
+  getUsers: (req, res) =>{
+    return User.findAll({raw: true}).then(users => {
+      return res.render('admin/users', { users: users })
+    })
+  },
+  toggleAdmin: (req, res) =>{
+    return User.findByPk(req.params.id)
+      .then((user) => {
+        user.update({
+          isAdmin: !user.isAdmin
+        })
+        .then((user) => {
+          req.flash('success_messages', 'isAdmin was successfully to update')
+          res.redirect('/admin/users')
+        })
       })
   }
 }   
