@@ -87,6 +87,17 @@ const adminController = {
       return res.render('admin/teachers', { teachers: teachers })
     })
   },
+  getTeacher: (req, res) => {
+    return Teacher.findByPk(req.params.id, {
+      raw:true,
+      nest: true, 
+      include: [User]
+    }).then(teacher => {
+      return res.render('admin/teacher', {
+        teacher: teacher
+      })
+    })
+  }
 }   
 
 module.exports = adminController
