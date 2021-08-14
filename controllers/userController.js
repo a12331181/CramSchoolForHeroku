@@ -47,6 +47,7 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+
   getUser: (req, res) => {
     return User.findByPk(req.params.id, {
       raw:true,
@@ -57,7 +58,24 @@ const userController = {
         user: user
       })
     })
-  }
+  },
+
+  getEditUserPage: (req, res) => {
+    let isTeacher = true
+    return User.findByPk(req.params.id, {
+      raw:true,
+      nest: true, 
+      include: [Teacher]
+    }).then(user => {
+      if (!user.Teacher.id) {
+        isTeacher = false
+      }
+      return res.render('editprofile', { 
+        user: user,
+        isTeacher: isTeacher
+      })
+    })
+  },
 }
 
 module.exports = userController
