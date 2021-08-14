@@ -1,0 +1,64 @@
+<br />
+
+<h1>資料管理後台</h1>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/cramschool">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link"  href="/admin/courses">課程</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/admin/teachers">教師清單</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學生清單</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">使用者管理</a>
+  </li>
+</ul>
+
+<br />
+<br />
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">教師名稱</th>
+      <th scope="col">性別</th>
+      <th scope="col">學歷</th>
+      <th scope="col">畢業學校</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each teachers}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.sex}}</td>
+      <td>{{this.education}}</td>
+      <td>{{this.school}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/teachers/{{this.id}}">
+            Show
+          </a>
+        </button>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/teachers/{{this.id}}/edit">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/teachers/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+  </table>
+</table>

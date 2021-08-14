@@ -1,6 +1,7 @@
 const db = require('../models')
 const Course = db.Course
 const User = db.User
+const Teacher = db.Teacher
 
 const adminController = {
   getSchoolIndexPage: (req, res) => {
@@ -80,7 +81,12 @@ const adminController = {
           res.redirect('/admin/users')
         })
       })
-  }
+  },
+  getTeachers: (req, res) =>{
+    return Teacher.findAll({raw: true}).then(teachers =>{
+      return res.render('admin/teachers', { teachers: teachers })
+    })
+  },
 }   
 
 module.exports = adminController
