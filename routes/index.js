@@ -37,6 +37,8 @@ module.exports = (app, passport) => {
 
   app.get('/admin/teachers', authenticatedAdmin, adminController.getTeachers)
   app.get('/admin/teachers/:id', authenticatedAdmin, adminController.getTeacher)
+  app.get('/admin/teachers/:id/edit', authenticatedAdmin, adminController.editTeacher)
+  app.put('/admin/teachers/:id', authenticatedAdmin, adminController.putTeacher)
 
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.getEditUserPage)

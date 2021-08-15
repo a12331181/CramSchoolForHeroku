@@ -97,7 +97,30 @@ const adminController = {
         teacher: teacher
       })
     })
-  }
+  },
+  editTeacher: (req, res) => {
+    return Teacher.findByPk(req.params.id, {raw:true}).then(teacher => {
+      return res.render('admin/editteacher', { teacher: teacher } )
+    })
+  },
+  putTeacher: (req, res) => {
+    return Teacher.findByPk(req.params.id)
+      .then((teacher) => {
+        teacher.update({
+          name: req.body.name,
+          sex: req.body.sex,
+          birth: req.body.birth,
+          phone: req.body.phone,
+          address: req.body.address,
+          education: req.body.education,
+          school: req.body.school
+        })
+        .then((teacher) => {
+          req.flash('success_messages', 'teacher was successfully to update')
+          res.redirect('/admin/teachers')
+        })
+      })
+  },
 }   
 
 module.exports = adminController
