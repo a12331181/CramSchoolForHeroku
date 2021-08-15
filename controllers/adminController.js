@@ -159,6 +159,13 @@ const adminController = {
         res.redirect('/admin/students')
       })
   },
+  getStudent: (req, res) => {
+    return Student.findByPk(req.params.id, {raw:true}).then(student => {
+      return res.render('admin/student', {
+        student: student
+      })
+    })
+  },
 }   
 
 module.exports = adminController
