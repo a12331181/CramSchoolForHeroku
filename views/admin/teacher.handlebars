@@ -1,15 +1,22 @@
 <br />
 
 <div class="card">
-  <h1 class="card-header">{{teacher.name}}</h1>
-  <div class="card-body">
-    <h5 class="card-text"><strong>性別 : </strong> {{teacher.sex}}</h5>
-    <h5 class="card-text"><strong>生日 : </strong> {{teacher.birth}}</h5>
-    <h5 class="card-text"><strong>信箱 : </strong> {{teacher.User.email}}</h5>
-    <h5 class="card-text"><strong>聯絡電話 : </strong> {{teacher.phone}}</h5>
-    <h5 class="card-text"><strong>聯絡地址 : </strong> {{teacher.address}}</h5>
-    <h5 class="card-text"><strong>最高學歷 : </strong> {{teacher.education}}</h5>
-    <h5 class="card-text"><strong>學校 : </strong> {{teacher.school}}</h5>
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{teacher.image}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{teacher.name}}</h5>
+        <p class="card-text"><strong>性別 : </strong> {{teacher.sex}}</p>
+        <p class="card-text"><strong>生日 : </strong> {{teacher.birth}}</p>
+        <p class="card-text"><strong>信箱 : </strong> {{teacher.User.email}}</p>
+        <p class="card-text"><strong>聯絡電話 : </strong> {{teacher.phone}}</p>
+        <p class="card-text"><strong>聯絡地址 : </strong> {{teacher.address}}</p>
+        <p class="card-text"><strong>最高學歷 : </strong> {{teacher.education}}</p>
+        <p class="card-text"><strong>學校 : </strong> {{teacher.school}}</p>
+      </div>
+    </div>
   </div>
 </div>
 
