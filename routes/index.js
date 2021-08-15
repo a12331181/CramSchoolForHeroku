@@ -1,6 +1,8 @@
 const schoolController = require('../controllers/schoolController.js')
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 
 module.exports = (app, passport) => {
   const authenticated = (req, res, next) => {
@@ -38,8 +40,8 @@ module.exports = (app, passport) => {
 
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.getEditUserPage)
-  app.post('/users', authenticated, userController.postUser)
-  app.put('/users/:id', authenticated, userController.putUser)
+  app.post('/users', authenticated, upload.single('image'), userController.postUser)
+  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)

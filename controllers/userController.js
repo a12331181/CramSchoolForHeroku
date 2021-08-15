@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
 const Teacher = db.Teacher
+const fs = require('fs')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -78,39 +79,87 @@ const userController = {
   },
   
   postUser: (req, res) => {
-    return Teacher.create({
-      name: req.body.name,
-      sex: req.body.sex,
-      birth: req.body.birth,
-      phone: req.body.phone,
-      address: req.body.address,
-      education: req.body.education,
-      school: req.body.school,
-      UserId: req.user.id
-    })
-    .then((teacher) => {
-      req.flash('success_messages', 'user was successfully created')
-      res.redirect('/')
-    })
-  },
-
-  putUser: (req, res) => {
-    return Teacher.findOne({ where: { UserId : req.user.id } })
-    .then((teacher) => {
-      teacher.update({
+    const file = req.file
+    if (file) {
+      fs.readFile(file.path, (err, data) => {
+        if (err) console.log('Error: ', err)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Teacher.create({
+            name: req.body.name,
+            sex: req.body.sex,
+            birth: req.body.birth,
+            phone: req.body.phone,
+            address: req.body.address,
+            education: req.body.education,
+            school: req.body.school,
+            UserId: req.user.id,
+            image: file ? `/upload/${file.originalname}` : null
+          }).then((teacher) => {
+            req.flash('success_messages', 'user was successfully created')
+            res.redirect('/')
+          })
+        })
+      })
+    } else {
+      return Teacher.create({
         name: req.body.name,
         sex: req.body.sex,
         birth: req.body.birth,
         phone: req.body.phone,
         address: req.body.address,
         education: req.body.education,
-        school: req.body.school
-      })
-      .then((teacher) => {
-        req.flash('success_messages', 'user was successfully to update')
+        school: req.body.school,
+        UserId: req.user.id,
+        image: null
+      }).then((teacher) => {
+        req.flash('success_messages', 'user was successfully created')
         res.redirect('/')
+      })      
+    }
+  },
+
+  putUser: (req, res) => {
+    const file = req.file
+    if (file) {
+      fs.readFile(file.path, (err, data) => {
+        if (err) console.log('Error: ', err)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Teacher.findOne({ where: { UserId : req.user.id } })
+            .then((teacher) => {
+              teacher.update({
+                name: req.body.name,
+                sex: req.body.sex,
+                birth: req.body.birth,
+                phone: req.body.phone,
+                address: req.body.address,
+                education: req.body.education,
+                school: req.body.school,
+                image: file ? `/upload/${file.originalname}` : teacher.image
+              }).then((teacher) => {
+                req.flash('success_messages', 'user was successfully to update')
+                res.redirect('/')
+              })
+            })
+        })
       })
-    })
+    } else {
+      return Teacher.findOne({ where: { UserId : req.user.id } })
+        .then((teacher) => {
+          teacher.update({
+            name: req.body.name,
+            sex: req.body.sex,
+            birth: req.body.birth,
+            phone: req.body.phone,
+            address: req.body.address,
+            education: req.body.education,
+            school: req.body.school,
+            image: teacher.image
+          }).then((teacher) => {
+            req.flash('success_messages', 'user was successfully to update')
+            res.redirect('/')
+          })
+        })
+    }
   },
 }
 
