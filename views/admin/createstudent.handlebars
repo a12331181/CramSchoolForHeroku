@@ -1,0 +1,60 @@
+{{#if student}}
+<form action="/admin/students/{{student.id}}?_method=PUT" method="POST">
+{{else}}
+<form action="/admin/students" method="POST">
+  {{/if}}
+  <div class="form-group">
+    <label for="name">學生名稱</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="輸入學生名稱.." value="{{student.name}}"
+      required>
+  </div>
+  
+  <div class="form-group">
+    <label for="sex">性別</label>
+    <select class="form-control" name="sex" id="sex" value="{{student.sex}}">
+      <option value="男">男</option>
+      <option value="女">女</option>
+    </select>
+  </div>
+  
+  <div class="form-group">
+    <label for="birth">生日</label>
+    <input type="date" class="form-control" name="birth" id="birth" placeholder="輸入出生年月日.." value="{{student.birth}}"
+      required>
+  </div>
+  
+  <div class="form-group">
+    <label for="school">學校</label>
+    <input type="text" class="form-control" name="school" id="school" placeholder="輸入學校.." value="{{student.school}}"
+      required>
+  </div>
+  
+  <div class="form-group">
+    <label for="grade">年級</label>
+    <select class="form-control" name="grade" id="grade">
+      <option value="一年級">一年級</option>
+      <option value="二年級">二年級</option>
+      <option value="三年級">三年級</option>
+      <option value="四年級">四年級</option>
+      <option value="五年級">五年級</option>
+      <option value="六年級">六年級</option>
+      <option value="國中一年級">國中一年級</option>
+      <option value="國中二年級">國中二年級</option>
+      <option value="國中三年級">國中三年級</option>
+      <option value="其他">其他</option>
+    </select>
+  </div>
+  
+  <div class="form-group">
+    <label for="tel">聯絡電話</label>
+    <input type="text" class="form-control" name="tel" id="tel" placeholder="輸入電話號碼.." value="{{student.tel}}" required>
+  </div>
+  
+  <div class="form-group">
+    <label for="address">地址</label>
+    <input type="text" class="form-control" name="address" id="address" placeholder="輸入地址.." value="{{student.address}}"
+      required>
+  </div>
+  
+  <button type="submit" class="btn btn-primary">送出資料</button>
+</form>

@@ -69,12 +69,12 @@ const adminController = {
       })
   },
   // 使用者相關程式碼
-  getUsers: (req, res) =>{
+  getUsers: (req, res) => {
     return User.findAll({raw: true}).then(users => {
       return res.render('admin/users', { users: users })
     })
   },
-  toggleAdmin: (req, res) =>{
+  toggleAdmin: (req, res) => {
     return User.findByPk(req.params.id)
       .then((user) => {
         user.update({
@@ -87,7 +87,7 @@ const adminController = {
       })
   },
   // 老師相關程式碼
-  getTeachers: (req, res) =>{
+  getTeachers: (req, res) => {
     return Teacher.findAll({raw: true}).then(teachers =>{
       return res.render('admin/teachers', { teachers: teachers })
     })
@@ -136,11 +136,14 @@ const adminController = {
       })
   },
   // 學生相關程式碼
-  getStudents: (req, res) =>{
+  getStudents: (req, res) => {
     return Student.findAll({raw: true}).then(students =>{
       return res.render('admin/students', { students: students })
     })
   },
+  getCreateStudentPage: (req, res) => {
+    return res.render('admin/createstudent')
+  }
 }   
 
 module.exports = adminController
