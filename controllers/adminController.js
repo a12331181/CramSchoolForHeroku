@@ -121,6 +121,15 @@ const adminController = {
         })
       })
   },
+  deleteTeacher: (req, res) => {
+    return Teacher.findByPk(req.params.id)
+      .then((teacher) => {
+        teacher.destroy()
+          .then((teacher) => {
+            res.redirect('/admin/teachers')
+          })
+      })
+  },
 }   
 
 module.exports = adminController
