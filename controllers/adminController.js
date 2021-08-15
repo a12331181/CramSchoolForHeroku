@@ -143,7 +143,22 @@ const adminController = {
   },
   getCreateStudentPage: (req, res) => {
     return res.render('admin/createstudent')
-  }
+  },
+  postStudent: (req, res) => {
+    return Student.create({
+      name: req.body.name,
+      sex: req.body.sex,
+      birth: req.body.birth,
+      school: req.body.school,
+      grade: req.body.grade,
+      tel: req.body.tel,
+      address: req.body.address,
+    })
+      .then((student) => {
+        req.flash('success_messages', 'Student was successfully created.')
+        res.redirect('/admin/students')
+      })
+  },
 }   
 
 module.exports = adminController
