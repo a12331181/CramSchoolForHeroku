@@ -7,13 +7,13 @@
     <a class="nav-link" href="/admin/cramschool">首頁</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/admin/courses">課程</a>
+    <a class="nav-link" href="/admin/courses">課程</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="/admin/teachers">教師清單</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/admin/students">學生清單</a>
+    <a class="nav-link active" aria-current="page" href="/admin/students">學生清單</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="/admin/users">使用者管理</a>
@@ -24,27 +24,33 @@
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
-      <th scope="col">課程名稱</th>
+      <th scope="col">學生名稱</th>
+      <th scope="col">性別</th>
+      <th scope="col">學校</th>
+      <th scope="col">年級</th>
       <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
-    {{#each courses}}
+    {{#each students}}
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.sex}}</td>
+      <td>{{this.school}}</td>
+      <td>{{this.grade}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a href="/admin/courses/{{this.id}}">
-            顯示課程細項
+          <a href="/admin/students/{{this.id}}">
+            瀏覽學生資料
           </a>
         </button>
         <button type="button" class="btn btn-link">
-          <a href="/admin/courses/{{this.id}}/edit">
+          <a href="/admin/students/{{this.id}}/edit">
             修改
           </a>
         </button>
-        <form action="/admin/courses/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+        <form action="/admin/students/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link">刪除</button>
         </form>
       </td>
@@ -57,6 +63,6 @@
 <br />
 <br />
 
-<a href='/admin/courses/create'>
-  <button type="button" class="btn btn-primary">建立新課程</button>
+<a href='/admin/students/create'>
+  <button type="button" class="btn btn-primary">新增學生</button>
 </a>

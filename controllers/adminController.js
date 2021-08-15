@@ -2,11 +2,14 @@ const db = require('../models')
 const Course = db.Course
 const User = db.User
 const Teacher = db.Teacher
+const Student = db.Student
 
 const adminController = {
+  // 後臺首頁
   getSchoolIndexPage: (req, res) => {
     return res.render('admin/cramschool')
   },
+  // 課程相關程式碼
   getCourses : (req, res) => {
     return Course.findAll({raw: true}).then(courses =>{
       return res.render('admin/courses', { courses: courses })
@@ -65,6 +68,7 @@ const adminController = {
           })
       })
   },
+  // 使用者相關程式碼
   getUsers: (req, res) =>{
     return User.findAll({raw: true}).then(users => {
       return res.render('admin/users', { users: users })
@@ -82,6 +86,7 @@ const adminController = {
         })
       })
   },
+  // 老師相關程式碼
   getTeachers: (req, res) =>{
     return Teacher.findAll({raw: true}).then(teachers =>{
       return res.render('admin/teachers', { teachers: teachers })
@@ -129,6 +134,12 @@ const adminController = {
             res.redirect('/admin/teachers')
           })
       })
+  },
+  // 學生相關程式碼
+  getStudents: (req, res) =>{
+    return Student.findAll({raw: true}).then(students =>{
+      return res.render('admin/students', { students: students })
+    })
   },
 }   
 
