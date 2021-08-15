@@ -38,6 +38,8 @@ module.exports = (app, passport) => {
 
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.getEditUserPage)
+  app.post('/users', authenticated, userController.postUser)
+  app.put('/users/:id', authenticated, userController.putUser)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)

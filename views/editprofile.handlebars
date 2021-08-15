@@ -1,7 +1,7 @@
 {{#if isTeacher}}
 <form action="/users/{{user.id}}?_method=PUT" method="POST">
 {{else}}
-<form action="/users/{{user.id}}" method="POST">
+<form action="/users" method="POST">
 {{/if}}
   <div class="form-group">
     <label for="name">教師名稱</label>

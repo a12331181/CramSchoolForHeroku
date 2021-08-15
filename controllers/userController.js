@@ -47,7 +47,7 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-
+  //目前登錄先做老師這個身分的使用者
   getUser: (req, res) => {
     return User.findByPk(req.params.id, {
       raw:true,
@@ -73,6 +73,42 @@ const userController = {
       return res.render('editprofile', { 
         user: user,
         isTeacher: isTeacher
+      })
+    })
+  },
+  
+  postUser: (req, res) => {
+    return Teacher.create({
+      name: req.body.name,
+      sex: req.body.sex,
+      birth: req.body.birth,
+      phone: req.body.phone,
+      address: req.body.address,
+      education: req.body.education,
+      school: req.body.school,
+      UserId: req.user.id
+    })
+    .then((teacher) => {
+      req.flash('success_messages', 'user was successfully created')
+      res.redirect('/')
+    })
+  },
+
+  putUser: (req, res) => {
+    return Teacher.findOne({ where: { UserId : req.user.id } })
+    .then((teacher) => {
+      teacher.update({
+        name: req.body.name,
+        sex: req.body.sex,
+        birth: req.body.birth,
+        phone: req.body.phone,
+        address: req.body.address,
+        education: req.body.education,
+        school: req.body.school
+      })
+      .then((teacher) => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect('/')
       })
     })
   },
