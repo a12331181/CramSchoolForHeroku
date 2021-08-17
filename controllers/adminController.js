@@ -3,6 +3,7 @@ const Course = db.Course
 const User = db.User
 const Teacher = db.Teacher
 const Student = db.Student
+const fs = require('fs')
 
 const adminController = {
   // 後臺首頁
@@ -145,19 +146,41 @@ const adminController = {
     return res.render('admin/createstudent')
   },
   postStudent: (req, res) => {
-    return Student.create({
-      name: req.body.name,
-      sex: req.body.sex,
-      birth: req.body.birth,
-      school: req.body.school,
-      grade: req.body.grade,
-      tel: req.body.tel,
-      address: req.body.address,
-    })
-      .then((student) => {
-        req.flash('success_messages', 'Student was successfully created.')
-        res.redirect('/admin/students')
+    file = req.file
+    if (file) {
+      fs.readFile(file.path, (err, data) => {
+        if (err) console.log('Error: ', err)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Student.create({
+            name: req.body.name,
+            sex: req.body.sex,
+            birth: req.body.birth,
+            school: req.body.school,
+            grade: req.body.grade,
+            tel: req.body.tel,
+            address: req.body.address,
+            image: file ? `/upload/${file.originalname}` : null
+          }).then((student) => {
+            req.flash('success_messages', 'Student was successfully created.')
+            return res.redirect('/admin/students')
+          })
+        })
       })
+    } else {      
+      return Student.create({
+        name: req.body.name,
+        sex: req.body.sex,
+        birth: req.body.birth,
+        school: req.body.school,
+        grade: req.body.grade,
+        tel: req.body.tel,
+        address: req.body.address,
+        image: null
+      }).then((student) => {
+        req.flash('success_messages', 'Student was successfully created')
+        return res.redirect('/admin/students')
+      })
+    }
   },
   getStudent: (req, res) => {
     return Student.findByPk(req.params.id, {raw:true}).then(student => {
@@ -172,22 +195,47 @@ const adminController = {
     })
   },
   putStudent: (req, res) => {
-    return Student.findByPk(req.params.id)
-      .then((student) => {
-        student.update({
-          name: req.body.name,
-          sex: req.body.sex,
-          birth: req.body.birth,
-          school: req.body.school,
-          grade: req.body.grade,
-          tel: req.body.tel,
-          address: req.body.address,
-        })
-        .then((student) => {
-          req.flash('success_messages', 'student was successfully to update')
-          res.redirect('/admin/students')
+    const file = req.file
+    if (file) {
+      fs.readFile(file.path, (err, data) => {
+        if (err) console.log('Error: ', err)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Student.findByPk(req.params.id)
+            .then((student) => {
+              student.update({
+                name: req.body.name,
+                sex: req.body.sex,
+                birth: req.body.birth,
+                school: req.body.school,
+                grade: req.body.grade,
+                tel: req.body.tel,
+                address: req.body.address,
+                image: file ? `/upload/${file.originalname}` : student.image
+              }).then((student) => {
+                req.flash('success_messages', 'Student was successfully to update.')
+                return res.redirect('/admin/students')
+              })
+            })
         })
       })
+    } else {
+      return Student.findByPk(req.params.id)
+        .then((student) => {
+          student.update({
+            name: req.body.name,
+            sex: req.body.sex,
+            birth: req.body.birth,
+            school: req.body.school,
+            grade: req.body.grade,
+            tel: req.body.tel,
+            address: req.body.address,
+            image: student.image
+          }).then((student) => {
+            req.flash('success_messages', 'Student was successfully to update.')
+            return res.redirect('/admin/students')
+          })
+        })
+    }
   },
   deleteStudent: (req, res) => {
     return Student.findByPk(req.params.id)

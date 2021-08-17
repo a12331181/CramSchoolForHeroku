@@ -44,10 +44,10 @@ module.exports = (app, passport) => {
   //admin student 相關路由
   app.get('/admin/students', authenticatedAdmin, adminController.getStudents)
   app.get('/admin/students/create', authenticatedAdmin, adminController.getCreateStudentPage)
-  app.post('/admin/students', authenticatedAdmin, adminController.postStudent)
+  app.post('/admin/students', authenticatedAdmin, upload.single('image'), adminController.postStudent)
   app.get('/admin/students/:id', authenticatedAdmin, adminController.getStudent)
   app.get('/admin/students/:id/edit', authenticatedAdmin, adminController.editStudent)
-  app.put('/admin/students/:id', authenticatedAdmin, adminController.putStudent)
+  app.put('/admin/students/:id', authenticatedAdmin, upload.single('image'), adminController.putStudent)
   app.delete('/admin/students/:id', authenticatedAdmin, adminController.deleteStudent)
   //user profile 相關路由
   app.get('/users/:id', authenticated, userController.getUser)

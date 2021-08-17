@@ -1,7 +1,7 @@
 {{#if student}}
-<form action="/admin/students/{{student.id}}?_method=PUT" method="POST">
+<form action="/admin/students/{{student.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
 {{else}}
-<form action="/admin/students" method="POST">
+<form action="/admin/students" method="POST" enctype="multipart/form-data">
   {{/if}}
   <div class="form-group">
     <label for="name">學生名稱</label>
@@ -56,5 +56,10 @@
       required>
   </div>
   
+  <div class="form-group">
+    <label for="image">照片</label>
+    <input type="file" class="form-control-file" id="image" name="image">
+  </div>
+
   <button type="submit" class="btn btn-primary">送出資料</button>
 </form>
