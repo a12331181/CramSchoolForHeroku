@@ -53,6 +53,11 @@
         <form action="/admin/students/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link">刪除</button>
         </form>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/students/enrolls/{{this.id}}/">
+            選課表單
+          </a>
+        </button>
       </td>
     </tr>
     {{/each}}

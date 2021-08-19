@@ -1,0 +1,36 @@
+<br>
+
+<div class="container" style="width: 100%">
+  <div class="d-flex align-items-center flex-column mt-3">
+    <h2 style="color:#3f353a">現有課程列表</h2>
+    
+    <br>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">課程名稱</th>
+          <th scope="col">#</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each courses}}
+        <tr>
+          <th scope="row">{{this.id}}</th>
+          <td style="color:#3f3937f5;">{{this.name}}</td>
+          <td>
+            <button type="button" class="btn btn-link">
+              <form action="/admin/enrolls/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-primary btn-sm">加入課程</button>
+              </form>
+            </button>
+            <form action="/admin/enrolls/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-danger btn-sm">取消課程</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

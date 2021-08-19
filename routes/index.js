@@ -49,6 +49,7 @@ module.exports = (app, passport) => {
   app.get('/admin/students/:id/edit', authenticatedAdmin, adminController.editStudent)
   app.put('/admin/students/:id', authenticatedAdmin, upload.single('image'), adminController.putStudent)
   app.delete('/admin/students/:id', authenticatedAdmin, adminController.deleteStudent)
+  app.get('/admin/students/enrolls/:id', authenticated, adminController.enrollCoursePage)
   //user profile 相關路由
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.getEditUserPage)

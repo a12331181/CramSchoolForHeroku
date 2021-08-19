@@ -3,6 +3,7 @@ const Course = db.Course
 const User = db.User
 const Teacher = db.Teacher
 const Student = db.Student
+const Enrollment = db.Enrollment
 const fs = require('fs')
 
 const adminController = {
@@ -245,6 +246,13 @@ const adminController = {
             res.redirect('/admin/students')
           })
       })
+  },
+  enrollCoursePage: (req, res) => {
+    return Student.findByPk(req.params.id, {raw: true}).then(student =>{
+      return Course.findAll({raw: true}).then(courses =>{
+        return res.render('admin/enrollcourse', { student: student, courses: courses })
+      })
+    })
   }
 }   
 
