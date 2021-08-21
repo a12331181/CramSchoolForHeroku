@@ -18,7 +18,14 @@ const adminController = {
     })
   },
   getCreateCoursePage: (req, res) => {
-    return res.render('admin/createcourse')
+    Teacher.findAll({
+      raw: true,
+      nest: true
+    }).then(teachers => {
+      return res.render('admin/createcourse', {
+        teachers: teachers
+      })
+    })
   },
   postCourse: (req, res) => {
     return Course.create({
@@ -26,7 +33,8 @@ const adminController = {
       time: req.body.time,
       type: req.body.type,
       amounts: req.body.amounts,
-      price: req.body.price
+      price: req.body.price,
+      TeacherId: req.body.teacherId
     })
       .then((course) => {
         req.flash('success_messages', 'Course was successfully created.')
@@ -41,8 +49,16 @@ const adminController = {
     })
   },
   editCourse: (req, res) => {
-    return Course.findByPk(req.params.id, {raw:true}).then(course => {
-      return res.render('admin/createcourse', { course: course } )
+    Teacher.findAll({
+      raw: true,
+      nest: true
+    }).then(teachers => {
+      return Course.findByPk(req.params.id, {raw:true}).then(course => {
+        return res.render('admin/createcourse', { 
+          course: course,
+          teachers: teachers
+        })
+      })
     })
   },
   putCourse: (req, res) => {
@@ -53,7 +69,8 @@ const adminController = {
           time: req.body.time,
           type: req.body.type,
           amounts: req.body.amounts,
-          price: req.body.price
+          price: req.body.price,
+          TeacherId: req.body.teacherId
         })
         .then((course) => {
           req.flash('success_messages', 'course was successfully to update')

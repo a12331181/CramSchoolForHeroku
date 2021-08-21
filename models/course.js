@@ -5,6 +5,7 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
     static associate(models) {
+      Course.belongsTo(models.Teacher)
       Course.belongsToMany(models.Student, {
         through: models.Enrollment,
         foreignKey: 'CourseId',
@@ -17,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     time: DataTypes.STRING,
     type: DataTypes.STRING,
     amounts: DataTypes.INTEGER,
-    price: DataTypes.INTEGER
+    price: DataTypes.INTEGER,
+    TeacherId: DataTypes.INTEGER 
   }, {
     sequelize,
     modelName: 'Course',
