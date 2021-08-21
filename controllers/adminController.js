@@ -248,11 +248,44 @@ const adminController = {
       })
   },
   enrollCoursePage: (req, res) => {
-    return Student.findByPk(req.params.id, {raw: true}).then(student =>{
-      return Course.findAll({raw: true}).then(courses =>{
-        return res.render('admin/enrollcourse', { student: student, courses: courses })
+    Student.findByPk(req.params.id, {
+      include: [ 
+        { model: Course, as: 'EnrolledCourses' }
+      ]
+    }).then(student =>{
+      Course.findAll({ 
+        include: [ 
+          { model: Student, as: 'EnrolledStudents' }
+        ]
+       }).then(courses =>{
+        const data = courses.map(r => ({
+        ...r.dataValues,
+        isEnrolled: student.EnrolledCourses.map(d => d.id).includes(r.id)
+      }))
+        return res.render('admin/enrollcourse', { student: student.toJSON(), courses: data })
       })
     })
+  },
+  addEnrollment: (req, res) => {
+    return Enrollment.create({
+      StudentId: req.params.studentId,
+      CourseId: req.params.courseId
+    }).then((student) => {
+        return res.redirect('back')
+      })
+  },
+  removeEnrollment: (req, res) => {
+    return Enrollment.findOne({
+      where: {
+        StudentId: req.params.studentId,
+        CourseId: req.params.courseId
+      }
+    }).then((enrollment) => {
+        enrollment.destroy()
+          .then((enrollment) => {
+            return res.redirect('back')
+          })
+      })
   }
 }   
 

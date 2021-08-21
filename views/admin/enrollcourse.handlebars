@@ -19,14 +19,15 @@
           <th scope="row">{{this.id}}</th>
           <td style="color:#3f3937f5;">{{this.name}}</td>
           <td>
-            <button type="button" class="btn btn-link">
-              <form action="/admin/enrolls/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            {{#if this.isEnrolled }}
+              <form action="/admin/students/{{../student.id}}/enrolls/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-danger btn-sm">取消課程</button>
+              </form>
+            {{else}}
+              <form action="/admin/students/{{../student.id}}/enrolls/{{this.id}}" method="POST" style="display: inline;">
                 <button type="submit" class="btn btn-primary btn-sm">加入課程</button>
               </form>
-            </button>
-            <form action="/admin/enrolls/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-              <button type="submit" class="btn btn-danger btn-sm">取消課程</button>
-            </form>
+            {{/if}}
           </td>
         </tr>
         {{/each}}

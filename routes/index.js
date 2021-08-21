@@ -49,7 +49,9 @@ module.exports = (app, passport) => {
   app.get('/admin/students/:id/edit', authenticatedAdmin, adminController.editStudent)
   app.put('/admin/students/:id', authenticatedAdmin, upload.single('image'), adminController.putStudent)
   app.delete('/admin/students/:id', authenticatedAdmin, adminController.deleteStudent)
-  app.get('/admin/students/enrolls/:id', authenticated, adminController.enrollCoursePage)
+  app.get('/admin/students/enrolls/:id', authenticatedAdmin, adminController.enrollCoursePage)
+  app.post('/admin/students/:studentId/enrolls/:courseId', authenticatedAdmin, adminController.addEnrollment)
+  app.delete('/admin/students/:studentId/enrolls/:courseId', authenticatedAdmin, adminController.removeEnrollment)
   //user profile 相關路由
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.getEditUserPage)
