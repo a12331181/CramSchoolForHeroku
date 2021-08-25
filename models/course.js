@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'CourseId',
         as: 'EnrolledStudents'
       })
+      Course.hasMany(models.Calendar)
     }
   };
   Course.init({
