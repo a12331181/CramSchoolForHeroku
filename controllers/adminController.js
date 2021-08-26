@@ -4,6 +4,7 @@ const User = db.User
 const Teacher = db.Teacher
 const Student = db.Student
 const Enrollment = db.Enrollment
+const Calendar = db.Calendar
 const fs = require('fs')
 
 const adminController = {
@@ -86,6 +87,16 @@ const adminController = {
             res.redirect('/admin/courses')
           })
       })
+  },
+  // 課程行事曆相關程式碼
+  getCalendar : (req, res) => {
+    return Course.findByPk(req.params.id, {
+      raw:true,
+      nest: true, 
+      include: [Calendar]
+    }).then(course =>{
+      return res.render('admin/course', { course: course })
+    })
   },
   // 使用者相關程式碼
   getUsers: (req, res) => {

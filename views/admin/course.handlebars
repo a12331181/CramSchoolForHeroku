@@ -1,16 +1,49 @@
 <br />
 
-<div class="card">
-  <h1 class="card-header">{{course.name}}</h1>
-  <div class="card-body">
-    <h5 class="card-text"><strong>上課時長 : </strong> {{course.time}} 分鐘</h5>
-    <h5 class="card-text"><strong>計費方式 : </strong> {{course.type}}</h5>
-    <h5 class="card-text"><strong>堂數 : </strong> {{course.amounts}} 堂/期</h5>
-    <h5 class="card-text"><strong>價格 : </strong> {{course.price}} 元</h5>
-  </div>
-</div>
+<h1>資料管理後台</h1>
 
-<hr>
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">上課日期</th>
+      <th scope="col">課程內容</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each calendars}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.date}}</td>
+      <td>{{this.content}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/courses/{{this.id}}/calendar">
+            顯示課程行事曆
+          </a>
+        </button>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/courses/{{this.id}}/calendar/edit">
+            修改
+          </a>
+        </button>
+        <form action="/admin/courses/{{this.id}}/calendar?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">刪除</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</table>
+
+<br />
+<br />
+
+<a href='/admin/courses/create/calendar'>
+  <button type="button" class="btn btn-primary">建立新的課程行事曆</button>
+</a>
 
 <br />
 <br />

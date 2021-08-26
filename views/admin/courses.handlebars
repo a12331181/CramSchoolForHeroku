@@ -25,6 +25,10 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">課程名稱</th>
+      <th scope="col">上課時長</th>
+      <th scope="col">計費方式</th>
+      <th scope="col">堂數</th>
+      <th scope="col">價格</th>
       <th scope="col">#</th>
     </tr>
   </thead>
@@ -33,10 +37,14 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.time}} 分鐘</td>
+      <td>{{this.type}}</td>
+      <td>{{this.amounts}}堂 / 期</td>
+      <td>{{this.price}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a href="/admin/courses/{{this.id}}">
-            顯示課程細項
+          <a href="/admin/courses/{{this.id}}/calendar">
+            顯示課程行事曆
           </a>
         </button>
         <button type="button" class="btn btn-link">

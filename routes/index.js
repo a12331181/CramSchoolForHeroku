@@ -36,6 +36,8 @@ module.exports = (app, passport) => {
   app.get('/admin/courses/:id/edit', authenticatedAdmin, adminController.editCourse)
   app.put('/admin/courses/:id', authenticatedAdmin, adminController.putCourse)
   app.delete('/admin/courses/:id', authenticatedAdmin, adminController.deleteCourse)
+  //admin calendar 相關路由
+  app.get('/admin/courses/:id/calendar', authenticatedAdmin, adminController.getCalendar)
   //admin teacher 相關路由
   app.get('/admin/teachers', authenticatedAdmin, adminController.getTeachers)
   app.get('/admin/teachers/:id', authenticatedAdmin, adminController.getTeacher)
