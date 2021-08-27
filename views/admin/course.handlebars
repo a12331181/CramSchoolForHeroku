@@ -1,6 +1,7 @@
 <br />
 
-<h1>資料管理後台</h1>
+<h1>{{course.name}}</h1>
+<h4 class="ml-2" style="color: rgb(182, 190, 202)">課程行事曆</h4>
 
 <table class="table">
   <thead class="thead-dark">
@@ -19,17 +20,12 @@
       <td>{{this.content}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a href="/admin/courses/{{this.id}}/calendar">
-            顯示課程行事曆
-          </a>
-        </button>
-        <button type="button" class="btn btn-link">
           <a href="/admin/courses/{{this.id}}/calendar/edit">
-            修改
+            修改行事曆
           </a>
         </button>
         <form action="/admin/courses/{{this.id}}/calendar?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link">刪除</button>
+          <button type="submit" class="btn btn-link">刪除行事曆</button>
         </form>
       </td>
     </tr>
@@ -41,7 +37,7 @@
 <br />
 <br />
 
-<a href='/admin/courses/create/calendar'>
+<a href='/admin/courses/{{course.id}}/calendar/create'>
   <button type="button" class="btn btn-primary">建立新的課程行事曆</button>
 </a>
 

@@ -38,6 +38,8 @@ module.exports = (app, passport) => {
   app.delete('/admin/courses/:id', authenticatedAdmin, adminController.deleteCourse)
   //admin calendar 相關路由
   app.get('/admin/courses/:id/calendar', authenticatedAdmin, adminController.getCalendar)
+  app.get('/admin/courses/:id/calendar/create', authenticatedAdmin, adminController.getCreateCalendarPage)
+  app.post('/admin/courses/calendar/create', authenticatedAdmin, adminController.postCalendar)
   //admin teacher 相關路由
   app.get('/admin/teachers', authenticatedAdmin, adminController.getTeachers)
   app.get('/admin/teachers/:id', authenticatedAdmin, adminController.getTeacher)

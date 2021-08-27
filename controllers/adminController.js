@@ -6,6 +6,7 @@ const Student = db.Student
 const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const fs = require('fs')
+const { Console } = require('console')
 
 const adminController = {
   // 後臺首頁
@@ -91,12 +92,28 @@ const adminController = {
   // 課程行事曆相關程式碼
   getCalendar : (req, res) => {
     return Course.findByPk(req.params.id, {
-      raw:true,
-      nest: true, 
       include: [Calendar]
     }).then(course =>{
-      return res.render('admin/course', { course: course })
+      const data = course.dataValues.Calendars
+      const calendars = data.map(r => ({
+        ...r.dataValues
+      }))
+      return res.render('admin/course', { course: course.dataValues, calendars: calendars })
     })
+  },
+  getCreateCalendarPage : (req, res) => {
+    return res.render('admin/createcalendar', { courseId: req.params.id })
+  },
+  postCalendar: (req, res) => {
+    return Calendar.create({
+      date: req.body.date,
+      content: req.body.content,
+      CourseId: req.body.courseId
+    })
+      .then((calendar) => {
+        req.flash('success_messages', 'Calendar was successfully created.')
+        res.redirect('/admin/courses')
+      })
   },
   // 使用者相關程式碼
   getUsers: (req, res) => {
