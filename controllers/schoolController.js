@@ -1,6 +1,7 @@
 const db = require('../models')
 const Course = db.Course
 const Teacher = db.Teacher
+const Calendar = db.Calendar
 
 const schoolController = {
   getSchoolIndexPage: (req, res) => {
@@ -17,6 +18,18 @@ const schoolController = {
     }).then(courses =>{
       return res.render('courses', { courses: courses })
     })
-  }
+  },
+
+  getCourse : (req, res) => {
+    return Course.findByPk(req.params.id, {
+      include: [Calendar]
+    }).then(course =>{
+      const data = course.dataValues.Calendars
+      const calendars = data.map(r => ({
+        ...r.dataValues
+      }))
+      return res.render('course', { course: course.dataValues, calendars: calendars })
+    })
+  },
 }
 module.exports = schoolController

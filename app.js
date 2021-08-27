@@ -9,7 +9,10 @@ const app = express()
 const port = 3000
 
 // setup handlebars
-app.engine('handlebars', handlebars({defaultLayout: 'main'})) 
+app.engine('handlebars', handlebars({
+  defaultLayout: 'main',
+  helpers: require('./config/handlebars-helpers')
+})) 
 app.set('view engine', 'handlebars')
 // setup bodyParser
 app.use(bodyParser.urlencoded({extended: true}))

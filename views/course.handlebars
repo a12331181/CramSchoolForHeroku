@@ -1,0 +1,22 @@
+<br />
+
+<h1>{{course.name}}</h1>
+<h4 class="ml-2" style="color: rgb(182, 190, 202)">課程行事曆</h4>
+
+<div class="row">
+  {{#each calendars}}
+  <div class="col-md-4">
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5><strong>{{this.date}}</strong></h5>
+      </div>
+      <div class="card-body" style="color: rgb(28, 36, 49); min-height: 220px">
+        <h5><strong>課程進度:</strong></h5>
+        <h5 class="card-title" style="color: rgb(53, 84, 133)">{{this.content}}</h5>
+        <br />
+        <p>-- {{moment this.createdAt}}</p>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
