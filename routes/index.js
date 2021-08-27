@@ -40,6 +40,8 @@ module.exports = (app, passport) => {
   app.get('/admin/courses/:id/calendar', authenticatedAdmin, adminController.getCalendar)
   app.get('/admin/courses/:id/calendar/create', authenticatedAdmin, adminController.getCreateCalendarPage)
   app.post('/admin/courses/calendar/create', authenticatedAdmin, adminController.postCalendar)
+  app.get('/admin/courses/:id/calendar/edit', authenticatedAdmin, adminController.editCalendar)
+  app.put('/admin/courses/:id/calendar', authenticatedAdmin, adminController.putCalendar)
   //admin teacher 相關路由
   app.get('/admin/teachers', authenticatedAdmin, adminController.getTeachers)
   app.get('/admin/teachers/:id', authenticatedAdmin, adminController.getTeacher)

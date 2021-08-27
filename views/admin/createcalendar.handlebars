@@ -1,8 +1,17 @@
+{{#if calendar}}
+<form action="/admin/courses/{{calendar.id}}/calendar?_method=PUT" method="POST">
+  <div class="form-group">
+    <label for="courseId">課程ID</label>
+    <input type="number" class="form-control" name="courseId" id="courseId" value="{{calendar.CourseId}}" readonly>
+  </div>
+{{else}}
 <form action="/admin/courses/calendar/create" method="POST">
   <div class="form-group">
     <label for="courseId">課程ID</label>
     <input type="number" class="form-control" name="courseId" id="courseId" value="{{courseId}}" readonly>
   </div>
+{{/if}}
+  
 
   <div class="form-group">
     <label for="date">日期</label>

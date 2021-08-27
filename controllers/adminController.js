@@ -6,7 +6,6 @@ const Student = db.Student
 const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const fs = require('fs')
-const { Console } = require('console')
 
 const adminController = {
   // 後臺首頁
@@ -111,8 +110,26 @@ const adminController = {
       CourseId: req.body.courseId
     })
       .then((calendar) => {
-        req.flash('success_messages', 'Calendar was successfully created.')
+        req.flash('success_messages', 'Calendar was successfully create.')
         res.redirect('/admin/courses')
+      })
+  },
+  editCalendar: (req, res) => {
+    return Calendar.findByPk(req.params.id, {raw:true}).then(calendar => {
+      return res.render('admin/createcalendar',{ calendar: calendar })
+    })
+  },
+  putCalendar: (req, res) => {
+    return Calendar.findByPk(req.params.id)
+      .then((calendar) => {
+        calendar.update({
+          date: req.body.date,
+          content: req.body.content
+        })
+        .then((calendar) => {
+          req.flash('success_messages', 'calendar was successfully to update')
+          res.redirect('/admin/courses')
+        })
       })
   },
   // 使用者相關程式碼
