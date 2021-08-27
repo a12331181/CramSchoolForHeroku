@@ -132,6 +132,15 @@ const adminController = {
         })
       })
   },
+  deleteCalendar: (req, res) => {
+    return Calendar.findByPk(req.params.id)
+      .then((calendar) => {
+        calendar.destroy()
+          .then((calendar) => {
+            res.redirect('/admin/courses')
+          })
+      })
+  },
   // 使用者相關程式碼
   getUsers: (req, res) => {
     return User.findAll({raw: true}).then(users => {
