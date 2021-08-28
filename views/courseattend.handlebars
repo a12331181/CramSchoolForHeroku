@@ -1,0 +1,50 @@
+<br>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses">課程總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">老師總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學生總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學生成績</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/cramschool/courses/attend">課程點名</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學費計算</a>
+  </li>
+</ul>
+
+<br>
+
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">課程名稱</th>
+      <th scope="col">授課老師</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each courses}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.Teacher.name}}</td>
+      <th scope="col">
+        <a href="/cramschool/courses/{{this.id}}/attend" class="btn-sm btn-dark">課程清單</a>
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

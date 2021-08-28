@@ -1,6 +1,7 @@
 const schoolController = require('../controllers/schoolController.js')
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
+const attendController = require('../controllers/attendController.js')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 
@@ -24,6 +25,7 @@ module.exports = (app, passport) => {
   app.get('/cramschool/courses', authenticated, schoolController.getCourses)
 
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)
+  app.get('/cramschool/courses/attend', authenticated, attendController.getCourseAttendIndexpage)
   //後台相關路由
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)
