@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Calendar extends Model {
     static associate(models) {
       Calendar.belongsTo(models.Course)
+      Calendar.hasMany(models.Attend)
     }
   };
   Calendar.init({
