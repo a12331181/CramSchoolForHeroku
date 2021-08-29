@@ -11,7 +11,7 @@
       <th scope="col">學生姓名</th>
       <th scope="col">性別</th>
       <th scope="col">年級</th>
-      <th scope="col">出席狀況</th>
+      <th scope="col">表單</th>
     </tr>
   </thead>
   <tbody>
@@ -22,17 +22,18 @@
       <td>{{this.sex}}</td>
       <td>{{this.grade}}</td>
       <th scope="col">
-        {{#if this.check }}
-          <p>已提交</p>
+        {{#if this.isChecked }}
+          <p style="color: seagreen;">已提交</p>
         {{else}}
         <form action="/cramschool/courses/calendar/{{../calendar.id}}/attend/{{this.id}}" method="POST" style="display: inline;">
           <div class="form-group mb-3">
             <label for="status"></label>
             <select class="form-select" id="status" name="status">
-              <option value="確認出席">出席</option>
-              <option value="事假">請假---事假</option>
-              <option value="病假">請假---病假</option>
-              <option value="喪假">請假---喪假</option>
+              <option value="出席">出席</option>
+              <option value="缺席/事假">事假</option>
+              <option value="缺席/病假">病假</option>
+              <option value="缺席/喪假">喪假</option>
+              <option value="缺席/無故缺席">無故缺席</option>
             </select>
             <button class="btn-sm btn-secondary" type="submit">送出</button>
           </div>
@@ -46,4 +47,4 @@
 
 <br />
 <br />
-<a href="javascript:history.back()">回上一頁</a>
+<a href="/cramschool/courses/attend">回到課程點名系統首頁</a>

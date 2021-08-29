@@ -4,6 +4,7 @@ const Teacher = db.Teacher
 const Student = db.Student
 const User = db.User
 const Calendar = db.Calendar
+const Attend = db.Attend
 
 const attendController = {
   getCourseAttendIndexpage: (req, res) => {
@@ -54,8 +55,7 @@ const attendController = {
   getAttend:(req, res) => {
     return Promise.all([
       Calendar.findByPk(req.params.calendarId,{
-        raw: true,
-        nest: true
+        include: [Attend]
       }),
       Course.findByPk(req.params.courseId,{
         include: [{ model: Student, as: 'EnrolledStudents' }]
@@ -63,10 +63,33 @@ const attendController = {
     ]).then(([calendar,course]) => {
       const data = course.EnrolledStudents
       const students = data.map(r => ({
-        ...r.dataValues
+        ...r.dataValues,
+        isChecked: calendar.Attends.map(d => d.StudentId).includes(r.id)
       }))
-      return res.render('attend', { calendar: calendar, students: students })
+      return res.render('attend', { calendar: calendar.toJSON(), students: students })
     })
-  }
+  },
+
+  postAttend: (req, res) => {
+    const status = req.body.status
+    let isAttend = ''
+    let reason = ''
+    let statusArray = status.split("/")
+    if (status.includes('出席')) {
+      isAttend = true
+      reason = ''
+    } else {
+      isAttend = false
+      reason = statusArray[1]
+    }
+    return Attend.create({
+      CalendarId: req.params.calendarId,
+      StudentId: req.params.studentId,
+      isAttend: isAttend,
+      reason: reason
+    }).then((attend) => {
+        return res.redirect('back')
+      })
+  },
 }
 module.exports = attendController
