@@ -91,5 +91,19 @@ const attendController = {
         return res.redirect('back')
       })
   },
+
+  deleteAttend: (req, res) => {
+    return Attend.findOne({
+      where: {
+        CalendarId: req.params.calendarId,
+        StudentId: req.params.studentId
+      }
+    }).then((attend) => {
+        attend.destroy()
+          .then((attend) => {
+            return res.redirect('back')
+          })
+      })
+  }
 }
 module.exports = attendController

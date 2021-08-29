@@ -23,7 +23,15 @@
       <td>{{this.grade}}</td>
       <th scope="col">
         {{#if this.isChecked }}
-          <p style="color: seagreen;">已提交</p>
+        <div class="container">
+          <div class="row">
+            <p class="mr-3 my-1" style="color: rgb(57, 109, 223);">已提交表單</p>
+            <form action="/cramschool/courses/calendar/{{../calendar.id}}/attend/{{this.id}}?_method=DELETE" method="POST"
+            style="display: inline;">
+              <button type="submit" class="btn btn-danger btn-sm">刪除紀錄</button>
+            </form>
+          </div>
+        </div>
         {{else}}
         <form action="/cramschool/courses/calendar/{{../calendar.id}}/attend/{{this.id}}" method="POST" style="display: inline;">
           <div class="form-group mb-3">
