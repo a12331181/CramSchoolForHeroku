@@ -27,6 +27,7 @@ module.exports = (app, passport) => {
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)
   app.get('/cramschool/courses/attend', authenticated, attendController.getCourseAttendIndexpage)
   app.get('/cramschool/courses/:id/attend', authenticated, attendController.getCourseCalendar)
+  app.get('/cramschool/courses/:courseId/calendar/:calendarId/attend', authenticated, attendController.getAttend)
   //後台相關路由
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)

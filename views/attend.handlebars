@@ -1,0 +1,49 @@
+<br>
+
+<h1><strong>上課日期: </strong>{{calendar.date}}</h1>
+
+<h5 class="ml-2" style="color: rgb(126, 120, 113);"><strong>課程內容: </strong>{{calendar.content}}</h5>
+
+<table class="table table-bordered" style="table-layout: fixed;">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">學生姓名</th>
+      <th scope="col">性別</th>
+      <th scope="col">年級</th>
+      <th scope="col">出席狀況</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each students}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.sex}}</td>
+      <td>{{this.grade}}</td>
+      <th scope="col">
+        {{#if this.check }}
+          <p>已提交</p>
+        {{else}}
+        <form action="/cramschool/courses/calendar/{{../calendar.id}}/attend/{{this.id}}" method="POST" style="display: inline;">
+          <div class="form-group mb-3">
+            <label for="status"></label>
+            <select class="form-select" id="status" name="status">
+              <option value="確認出席">出席</option>
+              <option value="事假">請假---事假</option>
+              <option value="病假">請假---病假</option>
+              <option value="喪假">請假---喪假</option>
+            </select>
+            <button class="btn-sm btn-secondary" type="submit">送出</button>
+          </div>
+        </form>
+        {{/if}}
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>

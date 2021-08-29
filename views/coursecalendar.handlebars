@@ -20,7 +20,7 @@
       <td>{{this.date}}</td>
       <td>{{this.content}}</td>
       <th scope="col">
-        <a href="/cramschool/courses/{{this.id}}/attend" class="btn-sm btn-dark">點名</a>
+        <a href="/cramschool/courses/{{../course.id}}/calendar/{{this.id}}/attend" class="btn-sm btn-dark">點名</a>
       </th>
     </tr>
     {{/each}}

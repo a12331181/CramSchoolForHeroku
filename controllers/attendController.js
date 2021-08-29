@@ -1,6 +1,7 @@
 const db = require('../models')
 const Course = db.Course
 const Teacher = db.Teacher
+const Student = db.Student
 const User = db.User
 const Calendar = db.Calendar
 
@@ -47,6 +48,24 @@ const attendController = {
         ...r.dataValues
       }))
       return res.render('coursecalendar', { course: course.dataValues, calendars: calendars })
+    })
+  },
+
+  getAttend:(req, res) => {
+    return Promise.all([
+      Calendar.findByPk(req.params.calendarId,{
+        raw: true,
+        nest: true
+      }),
+      Course.findByPk(req.params.courseId,{
+        include: [{ model: Student, as: 'EnrolledStudents' }]
+      })
+    ]).then(([calendar,course]) => {
+      const data = course.EnrolledStudents
+      const students = data.map(r => ({
+        ...r.dataValues
+      }))
+      return res.render('attend', { calendar: calendar, students: students })
     })
   }
 }
