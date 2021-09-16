@@ -2,6 +2,7 @@ const schoolController = require('../controllers/schoolController.js')
 const adminController = require('../controllers/adminController.js')
 const userController = require('../controllers/userController.js')
 const attendController = require('../controllers/attendController.js')
+const paymentController = require('../controllers/paymentController.js')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 
@@ -31,6 +32,7 @@ module.exports = (app, passport) => {
   app.post('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.postAttend)
   app.delete('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.deleteAttend)
   
+  app.get('/cramschool/payment', authenticated, paymentController.getPaymentIndexPage)
   //後台相關路由
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)
