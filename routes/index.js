@@ -33,6 +33,7 @@ module.exports = (app, passport) => {
   app.delete('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.deleteAttend)
   
   app.get('/cramschool/payment', authenticated, paymentController.getPaymentIndexPage)
+  app.get('/cramschool/payment/courses/:id', authenticated, paymentController.getEnrolledStudents)
   //後台相關路由
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)

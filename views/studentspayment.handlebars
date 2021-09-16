@@ -1,0 +1,30 @@
+<br>
+
+<h1>{{course.name}}</h1>
+
+<h5 class="ml-2" style="color: rgb(126, 120, 113);">學生繳費清單</h5>
+
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">學生姓名</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each students}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <th scope="col">
+        <a href="/cramschool/payment/courses/{{../course.id}}/enrollment/{{this.Enrollment.id}}" class="btn-sm btn-dark">查看收費表</a>
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>
