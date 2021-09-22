@@ -35,7 +35,7 @@
       <div class="card-body text-white bg-secondary">
         <h4 class="card-title"><strong>{{this.name}}</strong></h4>
       </div>
-      <img src="{{this.image}}" class="card-img-top" alt="" height="300px">
+      <img src="{{this.image}}" class="card-img-top" alt="" height="400px">
       <ul class="list-group list-group-flush">
         <li class="list-group-item list-group-item-secondary"><h5><strong>負責科目</strong></h5></li>
         {{#each this.Courses}}
@@ -43,7 +43,7 @@
         {{/each}}
       </ul>
       <div class="card-body">
-        <a href="#" class="card-link">基本資料</a>
+        <a href="/users/{{this.UserId}}" class="card-link">基本資料</a>
       </div>
     </div>
   </div>

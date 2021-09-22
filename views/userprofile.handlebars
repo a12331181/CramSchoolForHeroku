@@ -13,9 +13,11 @@
         <p class="card-text"><strong>地址 : </strong>{{user.Teacher.address}}</p>
         <p class="card-text"><strong>最高學歷 : </strong>{{user.Teacher.education}}</p>
         <p class="card-text"><strong>學校 : </strong>{{user.Teacher.school}}</p>
+        {{#if userIsMatch}}
         <a href="/users/{{user.id}}/edit">
           <button type="button" class="btn btn-primary">新增/修改個人資料</button>
         </a>
+        {{/if }}
       </div>
     </div>
   </div>

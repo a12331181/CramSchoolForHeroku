@@ -55,8 +55,13 @@ const userController = {
       nest: true, 
       include: [Teacher]
     }).then(user => {
+      let userIsMatch = true
+      if (req.user.id !== Number(req.params.id)){
+        userIsMatch = false
+      }
       return res.render('userprofile', {
-        user: user
+        user: user,
+        userIsMatch: userIsMatch
       })
     })
   },
@@ -68,6 +73,9 @@ const userController = {
       nest: true, 
       include: [Teacher]
     }).then(user => {
+      if (req.user.id !== Number(req.params.id)){
+        return res.redirect(`/users/${req.user.id}/edit`)
+      }
       if (!user.Teacher.id) {
         isTeacher = false
       }
