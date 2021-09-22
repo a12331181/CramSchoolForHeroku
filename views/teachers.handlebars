@@ -1,0 +1,52 @@
+<br>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses">課程總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/cramschool/teachers">老師總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學生總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學生成績</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses/attend">課程點名</a>
+  </li>
+  {{#if isAdmin}}
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/payment">學費計算</a>
+  </li>
+  {{/if}}
+</ul>
+
+<br>
+
+<div class="row">
+  {{#each teachers}}
+  <div class="col-md-4 mt-3">
+    <div class="card">
+      <div class="card-body text-white bg-secondary">
+        <h4 class="card-title"><strong>{{this.name}}</strong></h4>
+      </div>
+      <img src="{{this.image}}" class="card-img-top" alt="" height="300px">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-secondary"><h5><strong>負責科目</strong></h5></li>
+        {{#each this.Courses}}
+          <li class="list-group-item">{{this.dataValues.name}}</li>
+        {{/each}}
+      </ul>
+      <div class="card-body">
+        <a href="#" class="card-link">基本資料</a>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
+
