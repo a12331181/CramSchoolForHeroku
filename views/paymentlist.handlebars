@@ -1,0 +1,45 @@
+<br>
+
+<h1>{{course.name}}</h1>
+
+<h5 class="ml-2" style="color: rgb(126, 120, 113);">{{student.name}} 的收費紀錄</h5>
+
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">日期</th>
+      <th scope="col">價格</th>
+      <th scope="col">付款狀態</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each enrollment.Payments}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.time}}</td>
+      <td>{{this.amount}}</td>
+      {{#if this.isPaid }}
+      <td style="color: rgb(11, 189, 41);">已繳費</td>
+      {{else}}
+      <td style="color: rgb(199, 24, 24);">未繳費</td>
+      {{/if}}
+      <th scope="col">
+        <form action="/cramschool/payment/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn-sm btn-danger">刪除</button>
+        </form>
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+
+<a href='/cramschool/payment/courses/{{course.id}}/enrollment/{{enrollment.id}}/create'>
+  <button type="button" class="btn btn-primary">建立新一期收費</button>
+</a>
+
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>

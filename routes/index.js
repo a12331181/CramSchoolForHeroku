@@ -34,6 +34,10 @@ module.exports = (app, passport) => {
   
   app.get('/cramschool/payment', authenticated, paymentController.getPaymentIndexPage)
   app.get('/cramschool/payment/courses/:id', authenticated, paymentController.getEnrolledStudents)
+  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId', authenticated, paymentController.getPayments)
+  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId/create', authenticated, paymentController.getCreatePaymentPage)
+  app.post('/cramschool/payment/create', authenticated, paymentController.createPayment)
+  app.delete('/cramschool/payment/:id', authenticated, paymentController.deletePayment)
   //後台相關路由
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)
