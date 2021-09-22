@@ -20,7 +20,8 @@ const attendController = {
           include: [Teacher]
         }).then(courses => {
           return res.render('courseattend', {
-            courses: courses
+            courses: courses,
+            isAdmin: req.user.isAdmin
           })
         })
       } else {
@@ -33,7 +34,8 @@ const attendController = {
           }
         }).then(courses => {
           return res.render('courseattend', {
-            courses: courses
+            courses: courses,
+            isAdmin: req.user.isAdmin
           })
         })
       }

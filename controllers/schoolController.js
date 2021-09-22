@@ -5,7 +5,7 @@ const Calendar = db.Calendar
 
 const schoolController = {
   getSchoolIndexPage: (req, res) => {
-    return res.render('cramschool')
+    return res.render('cramschool', { isAdmin: req.user.isAdmin })
   },
 
   getCourses : (req, res) => {
@@ -16,7 +16,7 @@ const schoolController = {
         { model: Teacher }
       ]
     }).then(courses =>{
-      return res.render('courses', { courses: courses })
+      return res.render('courses', { courses: courses, isAdmin: req.user.isAdmin })
     })
   },
 

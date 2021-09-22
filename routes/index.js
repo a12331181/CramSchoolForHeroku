@@ -23,21 +23,21 @@ module.exports = (app, passport) => {
   //前台相關路由
   app.get('/', authenticated, (req, res) => res.redirect('/cramschool'))
   app.get('/cramschool', authenticated, schoolController.getSchoolIndexPage)
+  //課程相關路由
   app.get('/cramschool/courses', authenticated, schoolController.getCourses)
-
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)
   app.get('/cramschool/courses/attend', authenticated, attendController.getCourseAttendIndexpage)
   app.get('/cramschool/courses/:id/attend', authenticated, attendController.getCourseCalendar)
   app.get('/cramschool/courses/:courseId/calendar/:calendarId/attend', authenticated, attendController.getAttend)
   app.post('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.postAttend)
   app.delete('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.deleteAttend)
-  
-  app.get('/cramschool/payment', authenticated, paymentController.getPaymentIndexPage)
-  app.get('/cramschool/payment/courses/:id', authenticated, paymentController.getEnrolledStudents)
-  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId', authenticated, paymentController.getPayments)
-  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId/create', authenticated, paymentController.getCreatePaymentPage)
-  app.post('/cramschool/payment/create', authenticated, paymentController.createPayment)
-  app.delete('/cramschool/payment/:id', authenticated, paymentController.deletePayment)
+  //繳費紀錄相關路由
+  app.get('/cramschool/payment', authenticatedAdmin, paymentController.getPaymentIndexPage)
+  app.get('/cramschool/payment/courses/:id', authenticatedAdmin, paymentController.getEnrolledStudents)
+  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId', authenticatedAdmin, paymentController.getPayments)
+  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId/create', authenticatedAdmin, paymentController.getCreatePaymentPage)
+  app.post('/cramschool/payment/create', authenticatedAdmin, paymentController.createPayment)
+  app.delete('/cramschool/payment/:id', authenticatedAdmin, paymentController.deletePayment)
   //後台相關路由
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/cramschool'))
   app.get('/admin/cramschool', authenticatedAdmin, adminController.getSchoolIndexPage)
