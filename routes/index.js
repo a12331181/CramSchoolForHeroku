@@ -4,6 +4,7 @@ const userController = require('../controllers/userController.js')
 const attendController = require('../controllers/attendController.js')
 const paymentController = require('../controllers/paymentController.js')
 const teacherController = require('../controllers/teacherController.js')
+const studentController = require('../controllers/studentController.js')
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
 
@@ -34,6 +35,9 @@ module.exports = (app, passport) => {
   app.delete('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.deleteAttend)
   //老師資料相關路由
   app.get('/cramschool/teachers', authenticated, teacherController.getTeachers)
+  //學生資料相關路由
+  app.get('/cramschool/students', authenticated, studentController.getStudents)
+  app.get('/cramschool/students/:id', authenticated, studentController.getStudent)
   //繳費紀錄相關路由
   app.get('/cramschool/payment', authenticatedAdmin, paymentController.getPaymentIndexPage)
   app.get('/cramschool/payment/courses/:id', authenticatedAdmin, paymentController.getEnrolledStudents)

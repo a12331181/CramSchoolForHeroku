@@ -1,0 +1,64 @@
+<br>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses">課程總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/teachers">老師總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/cramschool/students">學生總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">學生成績</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses/attend">課程點名</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/payment">學費計算</a>
+  </li>
+</ul>
+
+<br>
+
+<form action="/cramschool/students" method="GET">
+  <div class="form-group d-flex justify-content-center">
+    <label class="mr-2 mt-1" for="CourseId"><strong style="color: rgb(83, 6, 6);">課程: </strong></label>
+    <select name="CourseId" id="CourseId" class="form-control-sm col-8" onchange="this.form.submit()">
+      <option value="" {{#ifCond '' courseId}} selected{{/ifCond}}>全部</option>
+      {{#each courses}}
+        <option value="{{this.id}}" {{#ifCond this.id ../courseId}} selected{{/ifCond}}>{{this.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+</form>
+
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">學生姓名</th>
+      <th scope="col">年級</th>
+      <th scope="col">課程</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each students}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.grade}}</td>
+      <td>{{this.EnrolledCourses.name}}</td>
+      <th scope="col">
+        <a href="/cramschool/students/{{this.id}}" class="btn-sm btn-dark">基本資料</a>
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
