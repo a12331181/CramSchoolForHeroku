@@ -1,5 +1,9 @@
 <br />
 
+<h2 style="color: rgb(151, 151, 135);"><strong>個人基本資料</strong></h2>
+
+<br />
+
 <div class="card">
   <div class="row g-0">
     <div class="col-md-4">
@@ -7,7 +11,7 @@
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">{{student.name}}</h5>
+        <h4 class="card-title" style="color: rgb(128, 66, 15);">{{student.name}}</h4>
         <p class="card-text"><strong>性別 : </strong> {{student.sex}}</p>
         <p class="card-text"><strong>生日 : </strong> {{student.birth}}</p>
         <p class="card-text"><strong>學校 : </strong> {{student.school}}</p>
@@ -21,6 +25,24 @@
 
 <hr>
 
+{{#if enrolledCourses}}
+<h2 style="color: rgb(151, 151, 135);">目前正在進行的課程:</h2>
+{{else}}
+<h2 style="color: rgb(151, 151, 135);">目前無進行中的課程</h2>
+{{/if}}
+<br>
+
+<div class="row">
+{{#each enrolledCourses}}
+<div class="card col-md-3">
+  <div class="card-body">
+    <h5 class="card-title">{{this.name}}</h5>
+    <a href="/cramschool/courses/{{this.id}}/calendar" class="card-link">課程行事曆</a>
+    <a href="/cramschool/students/{{../student.id}}/courses/{{this.id}}/attend" class="card-link">出缺席狀況</a>
+  </div>
+</div>
+{{/each}}
+</div>
 <br />
 <br />
 <a href="javascript:history.back()">回上一頁</a>

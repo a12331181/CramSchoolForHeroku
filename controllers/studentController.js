@@ -1,6 +1,8 @@
 const db = require('../models')
 const Student = db.Student
 const Course = db.Course
+const Calendar = db.Calendar
+const Attend = db.Attend
 const pageLimit = 10
 
 const studentController = {
@@ -76,10 +78,30 @@ const studentController = {
 
   getStudent: (req, res) => {
     Student.findByPk(req.params.id,{
-      raw: true,
-      nest: true
+      include: [{ model: Course, as: 'EnrolledCourses' }]
     }).then(student => {
-      return res.render('student', { student: student })
+      const enrolledCourses = student.EnrolledCourses.map(r => ({
+        ...r.dataValues
+      }))
+      return res.render('student', { student: student.toJSON(), enrolledCourses: enrolledCourses })
+    })
+  },
+
+  getStudentAttend: (req, res) => {
+    Promise.all([
+      Course.findByPk(req.params.courseId, {
+        include: [{ model: Calendar, include: { model: Attend, where: { StudentId: req.params.studentId }}}]
+      }),
+      Student.findByPk(req.params.studentId, {
+        raw: true,
+        nest: true
+      })
+    ]).then(([course,student]) => {
+      const data = course.Calendars.map(r => ({
+        ...r.dataValues,
+        ...r.dataValues.Attends['0'].dataValues
+      }))
+      return res.render('studentattend', { student: student, course: course.toJSON(), attends: data })
     })
   }
 }

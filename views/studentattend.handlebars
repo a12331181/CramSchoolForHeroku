@@ -1,0 +1,37 @@
+<br />
+
+<h2 style="color: rgb(73, 73, 60);"><strong>{{course.name}}</strong></h2>
+
+<h4 style="color: rgb(117, 117, 95);"><strong>{{student.name}}</strong></h2>
+
+<br>
+
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">日期</th>
+      <th scope="col">上課內容</th>
+      <th scope="col">出席狀況</th>
+      <th scope="col">缺席原因</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each attends}}
+    
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td scope="row">{{this.date}}</td>
+      <td scope="row">{{this.content}}</td>
+      <td>
+        {{#if this.isAttend}}
+        <p style="color: rgb(109, 179, 39);">正常出席</p>
+        {{else}}
+        <p style="color: rgb(207, 57, 20);">缺席</p>
+        {{/if}}
+      </td>
+      <td scope="row" style="color: rgb(146, 66, 9);">{{this.reason}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
