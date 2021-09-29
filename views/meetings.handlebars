@@ -1,6 +1,32 @@
 <br>
 
-<h4 class="ml-2" style="color: rgb(126, 120, 113);">會議記錄</h5>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses">課程總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/teachers">老師總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/students">學生總表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/cramschool/meetings">會議記錄</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/courses/attend">課程點名</a>
+  </li>
+  {{#if isAdmin}}
+  <li class="nav-item">
+    <a class="nav-link" href="/cramschool/payment">學費計算</a>
+  </li>
+  {{/if}}
+</ul>
+
+<br>
 
 <table class="table table-bordered">
   <thead>
@@ -18,13 +44,13 @@
       <td>{{this.date}}</td>
       <td>{{this.subject}}</td>
       <td>
-        <a href="/cramschool/meetings/{{this.id}}" class="btn btn-dark">
+        <a href="/cramschool/meetings/{{this.id}}" class="btn btn-dark my-1">
           會議內容
         </a>
         {{#if ../isAdmin}}
         <form action="/cramschool/meetings/{{this.id}}?_method=DELETE" method="POST"
           style="display: inline;">
-          <button type="submit" class="btn btn-danger btn ml-2">刪除</button>
+          <button type="submit" class="btn btn-danger btn ml-1 my-1">刪除</button>
         </form>
         {{/if}}
       </td>

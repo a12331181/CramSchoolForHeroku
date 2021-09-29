@@ -14,7 +14,7 @@
     <a class="nav-link" href="/cramschool/students">學生總表</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">學生成績</a>
+    <a class="nav-link" href="/cramschool/meetings">會議記錄</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="/cramschool/courses/attend">課程點名</a>
@@ -30,12 +30,12 @@
 
 <div class="row">
   {{#each teachers}}
-  <div class="col-md-4 mt-3">
+  <div class="col-md-3 mt-3">
     <div class="card">
       <div class="card-body text-white bg-secondary">
         <h4 class="card-title"><strong>{{this.name}}</strong></h4>
       </div>
-      <img src="{{this.image}}" class="card-img-top" alt="" height="400px">
+      <img src="{{this.image}}" class="card-img-top" alt="" height="300px">
       <ul class="list-group list-group-flush">
         <li class="list-group-item list-group-item-secondary"><h5><strong>負責科目</strong></h5></li>
         {{#each this.Courses}}

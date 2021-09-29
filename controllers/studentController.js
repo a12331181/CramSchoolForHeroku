@@ -42,7 +42,8 @@ const studentController = {
             page: page,
             totalPage: totalPage,
             prev: prev,
-            next: next
+            next: next,
+            isAdmin: req.user.isAdmin
           })
         })
       })
@@ -69,7 +70,8 @@ const studentController = {
             page: page,
             totalPage: totalPage,
             prev: prev,
-            next: next
+            next: next,
+            isAdmin: req.user.isAdmin
           })
         })
       })

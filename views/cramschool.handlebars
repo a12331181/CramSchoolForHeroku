@@ -14,7 +14,7 @@
     <a class="nav-link" href="/cramschool/students">學生總表</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">學生成績</a>
+    <a class="nav-link" href="/cramschool/meetings">會議記錄</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="/cramschool/courses/attend">課程點名</a>
@@ -27,12 +27,6 @@
 </ul>
 
 <br>
-
-<div class="card col-md-12">
-  <div class="card-body">
-    重要事項提醒
-  </div>
-</div>
 
 <div class="container">
   <div class="row justify-content-center ">
@@ -49,16 +43,16 @@
 
     <div class="col-md-6">
       <div class="card mt-3">
-        <h4 class="card-header">會議記錄</h4>
+        <h4 class="card-header">近期會議記錄</h4>
         <div class="card-body">
-          <h5 class="card-title" style="color: rgb(126, 123, 86);">近期會議記錄</h5>
+          <ul class="list-group list-group-flush">
           {{#each meetings}}
-          <div>
-            <h6 class="mt-2">{{this.date}}</h6>
-            <a href="/cramschool/meetings/{{this.id}}">{{this.subject}}</a>
-          </div>
+            <li class="list-group-item">
+              <h6>開會日期 : {{this.date}}</h6>
+              <a href="/cramschool/meetings/{{this.id}}">{{this.subject}}</a>
+            </li>
           {{/each}}
-          <a href="/cramschool/meetings" class="btn btn-secondary mt-2">會議記錄列表</a>
+          </ul>
         </div>
       </div>
     </div>
