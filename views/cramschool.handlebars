@@ -51,9 +51,14 @@
       <div class="card mt-3">
         <h4 class="card-header">會議記錄</h4>
         <div class="card-body">
-          <h5 class="card-title">標題</h5>
-          <p class="card-text">...</p>
-          <a href="#" class="btn btn-primary">連結</a>
+          <h5 class="card-title" style="color: rgb(126, 123, 86);">近期會議記錄</h5>
+          {{#each meetings}}
+          <div>
+            <h6 class="mt-2">{{this.date}}</h6>
+            <a href="/cramschool/meetings/{{this.id}}">{{this.subject}}</a>
+          </div>
+          {{/each}}
+          <a href="/cramschool/meetings" class="btn btn-secondary mt-2">會議記錄列表</a>
         </div>
       </div>
     </div>

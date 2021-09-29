@@ -1,0 +1,42 @@
+<br>
+
+<h4 class="ml-2" style="color: rgb(126, 120, 113);">會議記錄</h5>
+
+<table class="table table-bordered">
+  <thead>
+    <tr class="table-primary">
+      <th scope="col">#</th>
+      <th scope="col">開會日期</th>
+      <th scope="col">主題</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each meetings}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.date}}</td>
+      <td>{{this.subject}}</td>
+      <td>
+        <a href="/cramschool/meetings/{{this.id}}" class="btn btn-dark">
+          會議內容
+        </a>
+        {{#if ../isAdmin}}
+        <form action="/cramschool/meetings/{{this.id}}?_method=DELETE" method="POST"
+          style="display: inline;">
+          <button type="submit" class="btn btn-danger btn ml-2">刪除</button>
+        </form>
+        {{/if}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+{{#if isAdmin}}
+<a href="/cramschool/meetings/create" class="btn btn-primary">建立會議記錄</a>
+{{/if}}
+
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>

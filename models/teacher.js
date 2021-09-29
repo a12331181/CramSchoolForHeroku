@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Teacher.belongsTo(models.User)
       Teacher.hasMany(models.Course)
+      Teacher.hasMany(models.Meeting)
     }
   };
   Teacher.init({
