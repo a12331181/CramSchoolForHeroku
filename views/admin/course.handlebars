@@ -8,6 +8,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">上課日期</th>
+      <th scope="col">期數</th>
       <th scope="col">課程內容</th>
       <th scope="col">#</th>
     </tr>
@@ -17,6 +18,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.date}}</td>
+      <td>第{{this.period}}期</td>
       <td>{{this.content}}</td>
       <td>
         <button type="button" class="btn btn-link">
@@ -24,9 +26,6 @@
             修改行事曆
           </a>
         </button>
-        <form action="/admin/courses/{{this.id}}/calendar?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link">刪除行事曆</button>
-        </form>
       </td>
     </tr>
     {{/each}}
@@ -35,11 +34,43 @@
 </table>
 
 <br />
+
+<div class="row">
+  <form action="/admin/courses/{{course.id}}/calendar/create" method="POST">
+    <button type="submit" class="btn btn-primary">新增下一期課程</button>
+  </form>
+
+  {{#if isPeriodNotEqualOne}}
+  <form action="/admin/courses/{{course.id}}/calendar?_method=DELETE" method="POST" style="display: inline;">
+    <button type="submit" class="btn btn-danger ml-2">刪除最新一期課程</button>
+  </form>
+  {{/if}}
+</div>
+
 <br />
 
-<form action="/admin/courses/{{course.id}}/calendar/create" method="POST">
-  <button type="submit" class="btn btn-primary">新增下一期課程</button>
-</form>
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="/admin/courses/{{course.id}}/calendar?page={{prev}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+    {{#ifCond this ../page}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+    <li class="page-item"><a class="page-link"
+      href="/admin/courses/{{../course.id}}/calendar?page={{this}}">{{this}}</a></li>
+    {{/ifCond}}
+    {{/each}}
+    <li class="page-item"><a class="page-link" href="/admin/courses/{{course.id}}/calendar?page={{next}}"
+        aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
 <br />
 <br />

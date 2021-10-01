@@ -5,7 +5,7 @@
 {{/if}}
   <div class="form-group">
     <label for="name">課程名稱</label>
-    <input type="text" class="form-control" name="name" id="name" placeholder="輸入課程名稱" value="{{course.name}}" required>
+    <input type="text" class="form-control" name="name" id="name" placeholder="輸入課程名稱" value="{{course.name}}" required {{#if course}} readonly {{/if}}>
   </div>
 
   <div class="form-group">
@@ -26,7 +26,7 @@
   
   <div class="form-group">
     <label for="amounts">堂數</label>
-    <input type="number" class="form-control" name="amounts" id="amounts" min="0" value="{{course.amounts}}" placeholder="輸入堂數" required>
+    <input type="number" class="form-control" name="amounts" id="amounts" min="1" max="36" value="{{course.amounts}}" placeholder="輸入堂數" required {{#if course}} readonly {{/if}}>
   </div>
 
   <div class="form-group">

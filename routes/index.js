@@ -70,7 +70,7 @@ module.exports = (app, passport) => {
   app.post('/admin/courses/:id/calendar/create', authenticatedAdmin, adminController.postNextPeriodCalendar)
   app.get('/admin/courses/:id/calendar/edit', authenticatedAdmin, adminController.editCalendar)
   app.put('/admin/courses/:id/calendar', authenticatedAdmin, adminController.putCalendar)
-  app.delete('/admin/courses/:id/calendar', authenticatedAdmin, adminController.deleteCalendar)
+  app.delete('/admin/courses/:id/calendar', authenticatedAdmin, adminController.deleteCalendars)
   //admin teacher 相關路由
   app.get('/admin/teachers', authenticatedAdmin, adminController.getTeachers)
   app.get('/admin/teachers/:id', authenticatedAdmin, adminController.getTeacher)

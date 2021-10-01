@@ -6,6 +6,7 @@ const Student = db.Student
 const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const fs = require('fs')
+const pageLimit = 12
 
 const adminController = {
   // 後臺首頁
@@ -103,14 +104,49 @@ const adminController = {
   },
   // 課程行事曆相關程式碼
   getCalendar : (req, res) => {
-    return Course.findByPk(req.params.id, {
-      include: [Calendar]
-    }).then(course =>{
-      const data = course.dataValues.Calendars
-      const calendars = data.map(r => ({
+    let offset = 0
+    if (req.query.page) {
+      offset = (req.query.page - 1) * pageLimit
+    }
+    Promise.all([
+      Calendar.max('period', {
+        where: {
+          CourseId: req.params.id
+        }
+      }),
+      Course.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      }),
+      Calendar.findAndCountAll({
+        where: {
+          CourseId: req.params.id
+        },
+        offset: offset,
+        limit: pageLimit
+      })
+    ]).then(([calendarPeriod, course, result]) =>{
+      let isPeriodNotEqualOne = true
+      if (calendarPeriod === 1) {
+        isPeriodNotEqualOne = false
+      }
+      const page = Number(req.query.page) || 1
+      const pages = Math.ceil(result.count / pageLimit)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+      const calendars = result.rows.map(r => ({
         ...r.dataValues
       }))
-      return res.render('admin/course', { course: course.dataValues, calendars: calendars })
+      return res.render('admin/course', { 
+        course: course, 
+        calendars: calendars, 
+        isPeriodNotEqualOne: isPeriodNotEqualOne,
+        page: page,
+        totalPage: totalPage,
+        prev: prev,
+        next: next
+      })
     })
   },
   postNextPeriodCalendar: (req, res) => {
@@ -160,14 +196,22 @@ const adminController = {
         })
       })
   },
-  deleteCalendar: (req, res) => {
-    return Calendar.findByPk(req.params.id)
-      .then((calendar) => {
-        calendar.destroy()
-          .then((calendar) => {
-            res.redirect('/admin/courses')
-          })
+  deleteCalendars: (req, res) => {
+    Calendar.max('period', {
+      where: {
+        CourseId: req.params.id
+      }
+    }).then(period => {
+      Calendar.destroy({
+        where: {
+          CourseId: req.params.id,
+          period: period
+        }
+      }).then((calendars) => {
+        req.flash('success_messages', '已成功刪除最新一期課程')
+        res.redirect('/admin/courses')
       })
+    })
   },
   // 使用者相關程式碼
   getUsers: (req, res) => {
