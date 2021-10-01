@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
   Calendar.init({
     date: DataTypes.STRING,
     content: DataTypes.TEXT,
-    CourseId: DataTypes.INTEGER
+    CourseId: DataTypes.INTEGER,
+    period: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Calendar',

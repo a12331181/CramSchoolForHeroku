@@ -37,9 +37,9 @@
 <br />
 <br />
 
-<a href='/admin/courses/{{course.id}}/calendar/create'>
-  <button type="button" class="btn btn-primary">建立新的課程行事曆</button>
-</a>
+<form action="/admin/courses/{{course.id}}/calendar/create" method="POST">
+  <button type="submit" class="btn btn-primary">新增下一期課程</button>
+</form>
 
 <br />
 <br />

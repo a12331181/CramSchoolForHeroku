@@ -36,11 +36,24 @@ const adminController = {
       amounts: req.body.amounts,
       price: req.body.price,
       TeacherId: req.body.teacherId
-    })
-      .then((course) => {
+    }).then((course) => {
+      course = course.toJSON()
+      let calendarList = []
+      for (let i = 0; i < Number(course.amounts); i++) {
+        calendarList.push(
+          {
+            date: '2021-01-01', //日期,內容為預設值
+            content: i,
+            CourseId: course.id,
+            period: 1
+          }
+        )
+      }
+      Calendar.bulkCreate(calendarList).then(calendars => {
         req.flash('success_messages', 'Course was successfully created.')
         res.redirect('/admin/courses')
-      })
+      }) 
+    })
   },
   getCourse: (req, res) => {
     return Course.findByPk(req.params.id, {raw:true}).then(course => {
@@ -100,23 +113,38 @@ const adminController = {
       return res.render('admin/course', { course: course.dataValues, calendars: calendars })
     })
   },
-  getCreateCalendarPage : (req, res) => {
-    return res.render('admin/createcalendar', { courseId: req.params.id })
-  },
-  postCalendar: (req, res) => {
-    return Calendar.create({
-      date: req.body.date,
-      content: req.body.content,
-      CourseId: req.body.courseId
-    })
-      .then((calendar) => {
-        req.flash('success_messages', 'Calendar was successfully create.')
-        res.redirect('/admin/courses')
+  postNextPeriodCalendar: (req, res) => {
+    Promise.all([
+      Calendar.max('period', {
+        where: {
+          CourseId: req.params.id
+        }
+      }),
+      Course.findByPk(req.params.id, {
+        raw: true,
+        nest: true
       })
+    ]).then(([period, course]) => {
+      let calendarList = []
+      for (let i = 0; i < Number(course.amounts); i++) {
+        calendarList.push(
+          {
+            date: '2021-01-01', //日期,內容為預設值
+            content: i,
+            CourseId: course.id,
+            period: period + 1
+          }
+        )
+      }
+      Calendar.bulkCreate(calendarList).then(calendars => {
+        req.flash('success_messages', '已成功新增下一期課程')
+        res.redirect('/admin/courses')
+      }) 
+    })
   },
   editCalendar: (req, res) => {
     return Calendar.findByPk(req.params.id, {raw:true}).then(calendar => {
-      return res.render('admin/createcalendar',{ calendar: calendar })
+      return res.render('admin/editcalendar',{ calendar: calendar })
     })
   },
   putCalendar: (req, res) => {
