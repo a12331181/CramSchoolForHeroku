@@ -3,7 +3,8 @@ const Course = db.Course
 const Student = db.Student
 const Enrollment = db.Enrollment
 const Payment = db.Payment
-
+const Calendar = db.Calendar
+const moment = require('moment')
 
 const schoolController = {
   getPaymentIndexPage: (req, res) => {
@@ -69,6 +70,49 @@ const schoolController = {
     }).then((payment) => {
       req.flash('success_messages', '已成功建立收費紀錄')
       return res.redirect('/cramschool/payment')
+    })
+  },
+  
+  createPayments: (req, res) => {
+    Promise.all([
+      Calendar.max('period', {
+        where: {
+          CourseId: req.params.id
+        }
+      }),
+      Course.findByPk(req.params.id, {
+        include: [{ model: Student, as: 'EnrolledStudents' }]
+      })
+    ]).then(([calendarPeriod, course]) => {
+      enrolledStudents = course.dataValues.EnrolledStudents
+      course = course.toJSON()
+      const data = enrolledStudents.map(r => ({
+        ...r.dataValues.Enrollment.dataValues
+      }))
+      async function paymentLoopCreate (course, data) {
+        for (let i = 0; i < data.length; i++ ) {
+          await Payment.max('currentPeriod', {
+            where: {
+              EnrollmentId: data[i].id
+            }
+          }).then(currentPeriod => {
+            currentPeriod = isNaN(currentPeriod) ? 0 : currentPeriod
+            if (currentPeriod < calendarPeriod) {
+              Payment.create({
+                time: moment().format('YYYY-MM-DD'),
+                amount: course.price,
+                isPaid: false,
+                EnrollmentId: data[i].id,
+                currentPeriod: calendarPeriod
+              })
+            }
+          })
+        }
+      }
+      return paymentLoopCreate (course, data).then(()=> {
+        req.flash('success_messages', '已成功建立收費紀錄')
+        res.redirect('/cramschool/payment')
+      })
     })
   },
 
