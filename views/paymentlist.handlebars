@@ -8,6 +8,7 @@
   <thead>
     <tr class="table-primary">
       <th scope="col">#</th>
+      <th scope="col">目前期數</th>
       <th scope="col">日期</th>
       <th scope="col">價格</th>
       <th scope="col">付款狀態</th>
@@ -18,27 +19,37 @@
     {{#each enrollment.Payments}}
     <tr class="table-light">
       <th scope="row">{{this.id}}</th>
+      <td>{{this.currentPeriod}}</td>
       <td>{{this.time}}</td>
       <td>{{this.amount}}</td>
       {{#if this.isPaid }}
       <td style="color: rgb(11, 189, 41);">已繳費</td>
+      <th scope="col" style="color: rgb(76, 218, 47);">
+        √
+      </th>
       {{else}}
       <td style="color: rgb(199, 24, 24);">未繳費</td>
-      {{/if}}
       <th scope="col">
+        <form action="/cramschool/payment/{{this.id}}/paid?_method=PUT" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-primary btn-sm my-1">已收款</button>
+        </form>
         <form action="/cramschool/payment/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn-sm btn-danger">刪除</button>
+          <button type="submit" class="btn btn-sm btn-danger">刪除</button>
         </form>
       </th>
+      {{/if}}
     </tr>
     {{/each}}
   </tbody>
 </table>
 
+<div class="row">
+  <a href='/cramschool/payment/courses/{{course.id}}/enrollment/{{enrollment.id}}/create'>
+    <button type="button" class="btn btn-primary ml-3">建立收費表</button>
+  </a>
+  <p class="mx-2 my-2" style="color: brown;">*此功能專為此學生建立收費表</p>
+</div>
 
-<a href='/cramschool/payment/courses/{{course.id}}/enrollment/{{enrollment.id}}/create'>
-  <button type="button" class="btn btn-primary">建立新一期收費</button>
-</a>
 
 <br />
 <br />

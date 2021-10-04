@@ -15,7 +15,7 @@ const schoolController = {
       return res.render('payment', { courses: courses })
     })
   },
-  
+
   getEnrolledStudents: (req, res) => {
     return Course.findByPk(req.params.id,{
       include: [{ model: Student, as: 'EnrolledStudents' }]
@@ -62,14 +62,35 @@ const schoolController = {
   },
 
   createPayment: (req, res) => {
-    return Payment.create({
-      time: req.body.time,
-      amount: req.body.amount,
-      isPaid: req.body.isPaid,
-      EnrollmentId: req.body.EnrollmentId,
-    }).then((payment) => {
-      req.flash('success_messages', '已成功建立收費紀錄')
-      return res.redirect('/cramschool/payment')
+    Promise.all([
+      Calendar.max('period', {
+        where: {
+          CourseId: req.params.id
+        }
+      }),
+      Payment.max('currentPeriod', {
+        where: {
+          EnrollmentId: req.body.EnrollmentId
+        }
+      })
+    ]).then(([calendarPeriod, currentPeriod]) => {
+      let url = '/cramschool/payment/courses/'+ String(req.params.id) + '/enrollment/' + String(req.body.EnrollmentId)
+      currentPeriod = isNaN(currentPeriod) ? 0 : currentPeriod
+      if (currentPeriod < calendarPeriod) {
+        Payment.create({
+          time: req.body.time,
+          amount: req.body.amount,
+          isPaid: false,
+          EnrollmentId: req.body.EnrollmentId,
+          currentPeriod: calendarPeriod
+        }).then(() => {
+          req.flash('success_messages', '已成功建立收費紀錄')
+          return res.redirect(url)
+        })
+      } else {
+        req.flash('error_messages', '無法重複建立收費紀錄')
+        return res.redirect(url)
+      }
     })
   },
   
@@ -124,6 +145,19 @@ const schoolController = {
             req.flash('success_messages', '已成功刪除收費紀錄')
             res.redirect('/cramschool/payment')
           })
+      })
+  },
+
+  paymentPaid: (req, res) => {
+    return Payment.findByPk(req.params.id)
+      .then((payment) => {
+        payment.update({
+          isPaid: true
+        })
+        .then((payment) => {
+          req.flash('success_messages', '確認收到款項')
+          res.redirect('/cramschool/payment')
+        })
       })
   },
 }
