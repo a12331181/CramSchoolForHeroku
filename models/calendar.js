@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     date: DataTypes.STRING,
     content: DataTypes.TEXT,
     CourseId: DataTypes.INTEGER,
-    period: DataTypes.INTEGER
+    period: DataTypes.INTEGER,
+    isActive: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Calendar',
