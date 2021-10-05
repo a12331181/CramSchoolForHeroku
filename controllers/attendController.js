@@ -7,7 +7,7 @@ const Calendar = db.Calendar
 const Attend = db.Attend
 
 const attendController = {
-  getCourseAttendIndexpage: (req, res) => {
+  getAttendIndexpage: (req, res) => {
     User.findByPk(req.user.id,{
       raw: true,
       nest: true,
@@ -42,7 +42,7 @@ const attendController = {
     })
   },
 
-  getCourseCalendar: (req, res) => {
+  getAttendCourse: (req, res) => {
     Calendar.max('period', {
       where: {
         CourseId: req.params.id
@@ -70,6 +70,7 @@ const attendController = {
         calendar.update({
           isActive: false
         }).then(() => {
+          req.flash('success_messages', '已成功關閉行事曆')
           return res.redirect('back')
         })
     })
@@ -81,6 +82,7 @@ const attendController = {
         calendar.update({
           isActive: true
         }).then(() => {
+          req.flash('success_messages', '已成功開啟行事曆')
           return res.redirect('back')
         })
     })
@@ -100,7 +102,12 @@ const attendController = {
         ...r.dataValues,
         isChecked: calendar.Attends.map(d => d.StudentId).includes(r.id)
       }))
-      return res.render('attend', { calendar: calendar.toJSON(), students: students })
+      calendar = calendar.toJSON()
+      if (calendar.isActive) {
+        return res.render('attend', { calendar: calendar, students: students, course: course.toJSON() })
+      } else {
+        return res.redirect('back')
+      }
     })
   },
 

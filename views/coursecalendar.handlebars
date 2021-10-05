@@ -26,8 +26,8 @@
         <td>{{this.date}}</td>
         <td>{{this.content}}</td>
         <th scope="col">
-          <a href="/cramschool/courses/{{../course.id}}/calendar/{{this.id}}/attend" class="btn btn-sm btn-dark">點名</a>
-          <form action="/cramschool/courses/calendar/{{this.id}}/attend/close?_method=PUT" method="POST"
+          <a href="/cramschool/attend/courses/{{../course.id}}/calendar/{{this.id}}" class="btn btn-sm btn-dark">點名</a>
+          <form action="/cramschool/attend/calendar/{{this.id}}/close?_method=PUT" method="POST"
             style="display: inline;">
             {{#if ../isAdmin }}
             <button type="submit" class="btn btn-sm btn-danger">關閉點名</button>
@@ -41,8 +41,8 @@
         <td>{{this.date}}</td>
         <td>{{this.content}}</td>
         <th scope="col">
-          <a href="/cramschool/courses/{{../course.id}}/calendar/{{this.id}}/attend" class="btn btn-sm btn-dark disabled">點名</a>
-          <form action="/cramschool/courses/calendar/{{this.id}}/attend/open?_method=PUT" method="POST" style="display: inline;">
+          <a href="/cramschool/attend/courses/{{../course.id}}/calendar/{{this.id}}" class="btn btn-sm btn-dark disabled">點名</a>
+          <form action="/cramschool/attend/calendar/{{this.id}}/open?_method=PUT" method="POST" style="display: inline;">
             {{#if ../isAdmin }}
             <button type="submit" class="btn btn-sm btn-warning">開啟點名</button>
             {{/if}}
@@ -56,4 +56,4 @@
 
 <br />
 <br />
-<a href="javascript:history.back()">回上一頁</a>
+<a href="/cramschool/attend">回到點名系統首頁</a>

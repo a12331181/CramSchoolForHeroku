@@ -17,7 +17,7 @@
     <a class="nav-link" href="/cramschool/meetings">會議記錄</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/cramschool/courses/attend">課程點名</a>
+    <a class="nav-link active" aria-current="page" href="/cramschool/attend">課程點名</a>
   </li>
   {{#if isAdmin}}
   <li class="nav-item">
@@ -44,7 +44,7 @@
       <td>{{this.name}}</td>
       <td>{{this.Teacher.name}}</td>
       <th scope="col">
-        <a href="/cramschool/courses/{{this.id}}/attend" class="btn-sm btn-dark">課程清單</a>
+        <a href="/cramschool/attend/courses/{{this.id}}" class="btn btn-sm btn-dark">課程清單</a>
       </th>
     </tr>
     {{/each}}

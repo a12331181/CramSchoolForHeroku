@@ -26,14 +26,14 @@
         <div class="container">
           <div class="row">
             <p class="mr-3 my-1" style="color: rgb(57, 109, 223);">已提交表單</p>
-            <form action="/cramschool/courses/calendar/{{../calendar.id}}/attend/{{this.id}}?_method=DELETE" method="POST"
+            <form action="/cramschool/attend/calendar/{{../calendar.id}}/students/{{this.id}}?_method=DELETE" method="POST"
             style="display: inline;">
               <button type="submit" class="btn btn-danger btn-sm">刪除紀錄</button>
             </form>
           </div>
         </div>
         {{else}}
-        <form action="/cramschool/courses/calendar/{{../calendar.id}}/attend/{{this.id}}" method="POST" style="display: inline;">
+        <form action="/cramschool/attend/calendar/{{../calendar.id}}/students/{{this.id}}" method="POST" style="display: inline;">
           <div class="form-group mb-3">
             <label for="status"></label>
             <select class="form-select" id="status" name="status">
@@ -55,4 +55,4 @@
 
 <br />
 <br />
-<a href="/cramschool/courses/attend">回到課程點名系統首頁</a>
+<a href="/cramschool/attend/courses/{{course.id}}">回到上一頁</a>

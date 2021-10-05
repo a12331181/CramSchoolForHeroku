@@ -33,13 +33,13 @@ module.exports = (app, passport) => {
   //課程相關路由
   app.get('/cramschool/courses', authenticated, schoolController.getCourses)
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)
-  app.get('/cramschool/courses/attend', authenticated, attendController.getCourseAttendIndexpage)
-  app.get('/cramschool/courses/:id/attend', authenticated, attendController.getCourseCalendar)
-  app.put('/cramschool/courses/calendar/:id/attend/close', authenticatedAdmin, attendController.closeCalendar)
-  app.put('/cramschool/courses/calendar/:id/attend/open', authenticatedAdmin, attendController.openCalendar)
-  app.get('/cramschool/courses/:courseId/calendar/:calendarId/attend', authenticated, attendController.getAttend)
-  app.post('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.postAttend)
-  app.delete('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.deleteAttend)
+  app.get('/cramschool/attend', authenticated, attendController.getAttendIndexpage)
+  app.get('/cramschool/attend/courses/:id', authenticated, attendController.getAttendCourse)
+  app.put('/cramschool/attend/calendar/:id/close', authenticatedAdmin, attendController.closeCalendar)
+  app.put('/cramschool/attend/calendar/:id/open', authenticatedAdmin, attendController.openCalendar)
+  app.get('/cramschool/attend/courses/:courseId/calendar/:calendarId', authenticated, attendController.getAttend)
+  app.post('/cramschool/attend/calendar/:calendarId/students/:studentId', authenticated, attendController.postAttend)
+  app.delete('/cramschool/attend/calendar/:calendarId/students/:studentId', authenticated, attendController.deleteAttend)
   //老師資料相關路由
   app.get('/cramschool/teachers', authenticated, teacherController.getTeachers)
   //學生資料相關路由
