@@ -105,6 +105,8 @@ const schoolController = {
         include: [{ model: Student, as: 'EnrolledStudents' }]
       })
     ]).then(([calendarPeriod, course]) => {
+      let nums = 0
+      let url = '/cramschool/payment/courses/'+ String(course.id)
       enrolledStudents = course.dataValues.EnrolledStudents
       course = course.toJSON()
       const data = enrolledStudents.map(r => ({
@@ -126,37 +128,53 @@ const schoolController = {
                 EnrollmentId: data[i].id,
                 currentPeriod: calendarPeriod
               })
+              nums += 1
             }
           })
         }
       }
       return paymentLoopCreate (course, data).then(()=> {
-        req.flash('success_messages', '已成功建立收費紀錄')
-        res.redirect('/cramschool/payment')
+        if (nums > 0) {
+          req.flash('success_messages', '已成功建立收費紀錄')
+          res.redirect(url)
+        } else {
+          req.flash('error_messages', '目前皆是最新收費紀錄，故新增失敗')
+          res.redirect(url)
+        }
       })
     })
   },
 
   deletePayment: (req, res) => {
-    return Payment.findByPk(req.params.id)
-      .then((payment) => {
+    return Payment.findByPk(req.params.id,{
+      include: [Enrollment]
+    }).then((payment) => {
         payment.destroy()
           .then((payment) => {
+            payment = payment.toJSON()
+            let enrollmentId = payment.Enrollment.id
+            let courseId = payment.Enrollment.CourseId
+            let url = '/cramschool/payment/courses/'+ String(courseId) + '/enrollment/'+ String(enrollmentId)
             req.flash('success_messages', '已成功刪除收費紀錄')
-            res.redirect('/cramschool/payment')
+            res.redirect(url)
           })
       })
   },
 
   paymentPaid: (req, res) => {
-    return Payment.findByPk(req.params.id)
-      .then((payment) => {
+    return Payment.findByPk(req.params.id,{
+      include: [Enrollment]
+    }).then((payment) => {
         payment.update({
           isPaid: true
         })
         .then((payment) => {
-          req.flash('success_messages', '確認收到款項')
-          res.redirect('/cramschool/payment')
+          payment = payment.toJSON()
+          let enrollmentId = payment.Enrollment.id
+          let courseId = payment.Enrollment.CourseId
+          let url = '/cramschool/payment/courses/'+ String(courseId) + '/enrollment/'+ String(enrollmentId)
+          req.flash('success_messages', '確認收到款項，已更改為已繳費狀態')
+          res.redirect(url)
         })
       })
   },

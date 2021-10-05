@@ -9,9 +9,10 @@
     <tr class="table-primary">
       <th scope="col">#</th>
       <th scope="col">目前期數</th>
-      <th scope="col">日期</th>
+      <th scope="col">開立日期</th>
       <th scope="col">價格</th>
       <th scope="col">付款狀態</th>
+      <th scope="col">付款日期</th>
       <th scope="col">#</th>
     </tr>
   </thead>
@@ -23,20 +24,22 @@
       <td>{{this.time}}</td>
       <td>{{this.amount}}</td>
       {{#if this.isPaid }}
-      <td style="color: rgb(11, 189, 41);">已繳費</td>
-      <th scope="col" style="color: rgb(76, 218, 47);">
-        √
-      </th>
+      <td style="color: rgb(11, 189, 41);">已繳費 √</td>
+      <td style="color: rgb(70, 175, 49);">
+        {{currentTime this.updatedAt}}
+      </td>
+      <td >#</td>
       {{else}}
       <td style="color: rgb(199, 24, 24);">未繳費</td>
-      <th scope="col">
+      <td style="color: rgb(56, 55, 55);">暫無繳款日期</td>
+      <td>
         <form action="/cramschool/payment/{{this.id}}/paid?_method=PUT" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-primary btn-sm my-1">已收款</button>
         </form>
         <form action="/cramschool/payment/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-sm btn-danger">刪除</button>
         </form>
-      </th>
+      </td>
       {{/if}}
     </tr>
     {{/each}}
@@ -53,4 +56,4 @@
 
 <br />
 <br />
-<a href="javascript:history.back()">回上一頁</a>
+<a href="/cramschool/payment/courses/{{course.id}}">回上一頁</a>
