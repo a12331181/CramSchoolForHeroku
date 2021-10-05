@@ -35,6 +35,8 @@ module.exports = (app, passport) => {
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)
   app.get('/cramschool/courses/attend', authenticated, attendController.getCourseAttendIndexpage)
   app.get('/cramschool/courses/:id/attend', authenticated, attendController.getCourseCalendar)
+  app.put('/cramschool/courses/calendar/:id/attend/close', authenticatedAdmin, attendController.closeCalendar)
+  app.put('/cramschool/courses/calendar/:id/attend/open', authenticatedAdmin, attendController.openCalendar)
   app.get('/cramschool/courses/:courseId/calendar/:calendarId/attend', authenticated, attendController.getAttend)
   app.post('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.postAttend)
   app.delete('/cramschool/courses/calendar/:calendarId/attend/:studentId', authenticated, attendController.deleteAttend)

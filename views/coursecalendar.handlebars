@@ -2,7 +2,12 @@
 
 <h1>{{course.name}}</h1>
 
-<h5 class="ml-2" style="color: rgb(126, 120, 113);">課程行事曆</h5>
+<div class="row justify-content-between">
+  <h4 class="ml-4 mb-2" style="color: rgb(126, 120, 113);">課程行事曆</h4>
+  <h5 class="mr-4 my-1" style="color: rgb(211, 178, 141);">
+    <strong style="color: rgb(218, 166, 107);">目前期數: 第 {{maxPeriod}} 期 </strong>
+  </h5>
+</div>
 
 <table class="table table-bordered">
   <thead>
@@ -15,14 +20,36 @@
   </thead>
   <tbody>
     {{#each calendars}}
-    <tr class="table-light">
-      <th scope="row">{{this.id}}</th>
-      <td>{{this.date}}</td>
-      <td>{{this.content}}</td>
-      <th scope="col">
-        <a href="/cramschool/courses/{{../course.id}}/calendar/{{this.id}}/attend" class="btn-sm btn-dark">點名</a>
-      </th>
-    </tr>
+    {{#if this.isActive }}
+      <tr class="table-light">
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.date}}</td>
+        <td>{{this.content}}</td>
+        <th scope="col">
+          <a href="/cramschool/courses/{{../course.id}}/calendar/{{this.id}}/attend" class="btn btn-sm btn-dark">點名</a>
+          <form action="/cramschool/courses/calendar/{{this.id}}/attend/close?_method=PUT" method="POST"
+            style="display: inline;">
+            {{#if ../isAdmin }}
+            <button type="submit" class="btn btn-sm btn-danger">關閉點名</button>
+            {{/if}}
+          </form>
+        </th>
+      </tr>
+    {{else}}
+      <tr class="table-secondary">
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.date}}</td>
+        <td>{{this.content}}</td>
+        <th scope="col">
+          <a href="/cramschool/courses/{{../course.id}}/calendar/{{this.id}}/attend" class="btn btn-sm btn-dark disabled">點名</a>
+          <form action="/cramschool/courses/calendar/{{this.id}}/attend/open?_method=PUT" method="POST" style="display: inline;">
+            {{#if ../isAdmin }}
+            <button type="submit" class="btn btn-sm btn-warning">開啟點名</button>
+            {{/if}}
+          </form>
+        </th>
+      </tr>
+    {{/if}}
     {{/each}}
   </tbody>
 </table>

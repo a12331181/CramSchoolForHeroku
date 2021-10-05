@@ -43,14 +43,46 @@ const attendController = {
   },
 
   getCourseCalendar: (req, res) => {
-    Course.findByPk(req.params.id,{
-      include: [Calendar]
-    }).then(course =>{
-      const data = course.dataValues.Calendars
-      const calendars = data.map(r => ({
-        ...r.dataValues
-      }))
-      return res.render('coursecalendar', { course: course.dataValues, calendars: calendars })
+    Calendar.max('period', {
+      where: {
+        CourseId: req.params.id
+      }
+    }).then(maxPeriod => {
+      Course.findByPk(req.params.id, {
+        include: {
+          model: Calendar,
+          where: { period: maxPeriod }
+        },
+        order: [[Calendar, 'isActive', 'desc']]
+      }).then(course =>{
+        const data = course.dataValues.Calendars
+        const calendars = data.map(r => ({
+          ...r.dataValues
+        }))
+        return res.render('coursecalendar', { course: course.dataValues, calendars: calendars, maxPeriod: maxPeriod, isAdmin: req.user.isAdmin })
+      })
+    })
+  },
+
+  closeCalendar: (req, res) => {
+    Calendar.findByPk(req.params.id)
+      .then(calendar => {
+        calendar.update({
+          isActive: false
+        }).then(() => {
+          return res.redirect('back')
+        })
+    })
+  },
+
+  openCalendar: (req, res) => {
+    Calendar.findByPk(req.params.id)
+      .then(calendar => {
+        calendar.update({
+          isActive: true
+        }).then(() => {
+          return res.redirect('back')
+        })
     })
   },
 
