@@ -29,14 +29,26 @@ const schoolController = {
   },
 
   getCourse : (req, res) => {
-    return Course.findByPk(req.params.id, {
-      include: [Calendar]
-    }).then(course =>{
-      const data = course.dataValues.Calendars
-      const calendars = data.map(r => ({
-        ...r.dataValues
-      }))
-      return res.render('course', { course: course.dataValues, calendars: calendars })
+    Calendar.max('period', {
+      where: {
+        CourseId: req.params.id
+      }
+    }).then(currentPeriod => {
+      Course.findByPk(req.params.id, {
+        include: {
+          model: Calendar,
+          where: { period: currentPeriod }
+        },
+        order: [[Calendar, 'date', 'ASC']]
+      }).then(course =>{
+        const data = course.dataValues.Calendars
+        const calendars = data.map(r => ({
+          ...r.dataValues
+        }))
+        const firstCalendarDate = calendars[0].date
+        const lastCalendarDate = calendars[calendars.length -1].date
+        return res.render('course', { course: course.dataValues, calendars: calendars, currentPeriod: currentPeriod, firstCalendarDate: firstCalendarDate, lastCalendarDate: lastCalendarDate })
+      })
     })
   },
   
