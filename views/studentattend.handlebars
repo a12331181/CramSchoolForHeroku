@@ -1,9 +1,15 @@
 <br />
 
-<h2 style="color: rgb(73, 73, 60);"><strong>{{course.name}}</strong></h2>
+<h1 style="color: rgb(73, 73, 60);"><strong>{{course.name}}</strong></h1>
 
-<h4 style="color: rgb(117, 117, 95);"><strong>{{student.name}}</strong></h2>
+<div class="row">
+  <h4 class="ml-4 mb-2" style="color: rgb(117, 117, 95);"><strong>{{student.name}}</strong></h4>
+  <h4 class="ml-4 mb-2" style="color: rgb(126, 120, 113);">出缺席紀錄表</h4>
+</div>
 
+  <h5 class="mr-4 my-1" style="color: rgb(211, 178, 141);">
+    <strong style="color: rgb(218, 166, 107);">目前期數: 第 {{currentPeriod}} 期 </strong>
+  </h5>
 <br>
 
 <table class="table table-bordered">
@@ -18,7 +24,6 @@
   </thead>
   <tbody>
     {{#each attends}}
-    
     <tr class="table-light">
       <th scope="row">{{this.id}}</th>
       <td scope="row">{{this.date}}</td>
@@ -33,5 +38,20 @@
       <td scope="row" style="color: rgb(146, 66, 9);">{{this.reason}}</td>
     </tr>
     {{/each}}
+    {{#ifCond finishCalendarNums 0}}
+    <tr class="table-light">
+      <th colspan="5" style="color: rgb(192, 72, 16);text-align: center;">目前暫無該期出席資料</th>
+    </tr>
+    {{else}}
+     <tr class="table-light">
+      <th colspan="5" style="text-align: center;">
+        該期總堂數: {{ totalCalendarNums }} / 已上堂數: {{ finishCalendarNums }} / 剩餘堂數 : {{ remainCalendarNums }}
+      </th>
+    </tr>
+    {{/ifCond}}
   </tbody>
 </table>
+
+<br />
+<br />
+<a href="/cramschool/students/{{student.id}}">返回該學生基本資料頁面</a>

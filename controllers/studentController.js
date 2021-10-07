@@ -3,7 +3,7 @@ const Student = db.Student
 const Course = db.Course
 const Calendar = db.Calendar
 const Attend = db.Attend
-const pageLimit = 10
+const pageLimit = 12
 
 const studentController = {
   getStudents: (req, res) => {
@@ -90,20 +90,39 @@ const studentController = {
   },
 
   getStudentAttend: (req, res) => {
-    Promise.all([
-      Course.findByPk(req.params.courseId, {
-        include: [{ model: Calendar, include: { model: Attend, where: { StudentId: req.params.studentId }}}]
-      }),
-      Student.findByPk(req.params.studentId, {
-        raw: true,
-        nest: true
+    Calendar.max('period', {
+      where: {
+        CourseId: req.params.courseId
+      }
+    }).then(currentPeriod => {
+      Promise.all([
+        Calendar.findAndCountAll({
+          where: { CourseId: req.params.courseId, period: currentPeriod },
+          include: { model: Attend, where: { StudentId: req.params.studentId }},
+        }),
+        Course.findByPk(req.params.courseId, {
+          raw: true,
+          nest: true
+        }),
+        Student.findByPk(req.params.studentId, {
+          raw: true,
+          nest: true
+        })
+      ]).then(([calendars, course, student]) => {
+        const data = calendars.rows.map(r => ({
+          ...r.dataValues,
+          ...r.dataValues.Attends['0'].dataValues
+        }))
+        return res.render('studentattend', { 
+          student: student, 
+          course: course, 
+          attends: data,
+          currentPeriod: currentPeriod,
+          totalCalendarNums: course.amounts,
+          finishCalendarNums: data.length,
+          remainCalendarNums: course.amounts - data.length
+        })
       })
-    ]).then(([course,student]) => {
-      const data = course.Calendars.map(r => ({
-        ...r.dataValues,
-        ...r.dataValues.Attends['0'].dataValues
-      }))
-      return res.render('studentattend', { student: student, course: course.toJSON(), attends: data })
     })
   }
 }
