@@ -3,6 +3,7 @@ const Course = db.Course
 const Teacher = db.Teacher
 const Calendar = db.Calendar
 const Meeting = db.Meeting
+const Student = db.Student
 
 const schoolController = {
   getSchoolIndexPage: (req, res) => {
@@ -52,6 +53,17 @@ const schoolController = {
     })
   },
   
+  getCourseEnrolledStudents: (req, res) => {
+    Course.findByPk(req.params.id, {
+      include: [{ model: Student, as: 'EnrolledStudents' }]
+    }).then(course => {
+      const students = course.EnrolledStudents.map(r => ({
+        ...r.dataValues
+      }))
+      return res.render('enrolledstudents', { course: course.toJSON(), students: students })
+    })
+  },
+
   getMeetings: (req, res) => {
     Meeting.findAll({
       raw: true,

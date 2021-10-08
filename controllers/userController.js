@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
 const Teacher = db.Teacher
+const Course = db.Course
 const fs = require('fs')
 
 const userController = {
@@ -51,16 +52,21 @@ const userController = {
   //目前登錄先做老師這個身分的使用者
   getUser: (req, res) => {
     return User.findByPk(req.params.id, {
-      raw:true,
-      nest: true, 
-      include: [Teacher]
+      include: { model: Teacher, include: { model: Course }}
     }).then(user => {
       let userIsMatch = true
       if (req.user.id !== Number(req.params.id)){
         userIsMatch = false
       }
+      user = user.dataValues
+      let teacher = user.Teacher.dataValues
+      const courses = teacher.Courses.map(r => ({
+        ...r.dataValues
+      }))
       return res.render('userprofile', {
         user: user,
+        teacher: teacher,
+        courses: courses,
         userIsMatch: userIsMatch
       })
     })
@@ -74,7 +80,7 @@ const userController = {
       include: [Teacher]
     }).then(user => {
       if (req.user.id !== Number(req.params.id)){
-        return res.redirect(`/users/${req.user.id}/edit`)
+        return res.redirect(`/users/${req.user.id}`)
       }
       if (!user.Teacher.id) {
         isTeacher = false

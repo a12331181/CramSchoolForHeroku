@@ -33,16 +33,18 @@
   <div class="col-md-3 mt-3">
     <div class="card">
       <div class="card-body text-white bg-secondary">
-        <h4 class="card-title"><strong>{{this.name}}</strong></h4>
+        <h5 class="card-title"><strong>{{this.name}}</strong></h5>
       </div>
-      <img src="{{this.image}}" class="card-img-top" alt="" height="300px">
+      <img src="{{this.image}}" class="card-img-top" alt="" height="280px">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item list-group-item-secondary"><h5><strong>負責科目</strong></h5></li>
-        {{#each this.Courses}}
-          <li class="list-group-item">{{this.dataValues.name}}</li>
-        {{/each}}
+        <li class="list-group-item">
+          <strong>連絡電話: </strong>{{this.phone}}
+        </li>
+        <li class="list-group-item">
+          <strong>信箱: </strong>{{this.email}}
+        </li>
       </ul>
-      <div class="card-body">
+      <div class="card-body" style="background-color: rgb(229, 228, 226);">
         <a href="/users/{{this.UserId}}" class="card-link">基本資料</a>
       </div>
     </div>

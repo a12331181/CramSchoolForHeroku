@@ -1,0 +1,29 @@
+<br>
+
+<h1>{{course.name}}</h1>
+
+<h3 class="ml-2" style="color: rgb(171, 174, 175);">學生名單</h3>
+
+<div class="row">
+  {{#each students}}
+  <div class="col-md-3 mt-3">
+    <div class="card" style="width: 16rem;">
+      <div class="card-body" style="background-color: rgb(110, 181, 238);">
+        <h5 class="card-title" style="color: rgb(250, 253, 255);"><strong>{{this.name}}</strong></h5>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>就讀學校: </strong>{{this.school}}</li>
+        <li class="list-group-item"><strong>年級: </strong>{{this.grade}}</li>
+      </ul>
+      <div class="card-body" style="background-color: rgb(237, 243, 245);">
+        <a href="/cramschool/students/{{this.id}}" class="card-link">詳細資料</a>
+        <a href="/cramschool/students/{{this.id}}/courses/{{../course.id}}/attend" class="card-link">出缺席資料</a>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
+
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>
