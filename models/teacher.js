@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       Teacher.belongsTo(models.User)
       Teacher.hasMany(models.Course)
       Teacher.hasMany(models.Meeting)
+      Teacher.hasMany(models.Diary)
     }
   };
   Teacher.init({
