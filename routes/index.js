@@ -30,7 +30,7 @@ module.exports = (app, passport) => {
   app.get('/cramschool/meetings/:id', authenticated, schoolController.getMeeting)
   app.post('/cramschool/meetings', authenticatedAdmin, schoolController.createMeeting)
   app.delete('/cramschool/meetings/:id', authenticatedAdmin, schoolController.deleteMeeting)
-  //課程相關路由 cramschool/courses/1/enrolledstudents
+  //課程相關路由
   app.get('/cramschool/courses', authenticated, schoolController.getCourses)
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)
   app.get('/cramschool/courses/:id/enrolledstudents', authenticated, schoolController.getCourseEnrolledStudents)

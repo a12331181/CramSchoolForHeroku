@@ -59,16 +59,23 @@ const userController = {
         userIsMatch = false
       }
       user = user.dataValues
-      let teacher = user.Teacher.dataValues
-      const courses = teacher.Courses.map(r => ({
-        ...r.dataValues
-      }))
-      return res.render('userprofile', {
-        user: user,
-        teacher: teacher,
-        courses: courses,
-        userIsMatch: userIsMatch
-      })
+      if (!user.Teacher) {
+        return res.render('userprofile', {
+          user: user,
+          userIsMatch: userIsMatch
+        })
+      } else {
+        let teacher = user.Teacher.dataValues
+        const courses = teacher.Courses.map(r => ({
+          ...r.dataValues
+        }))
+        return res.render('userprofile', {
+          user: user,
+          teacher: teacher,
+          courses: courses,
+          userIsMatch: userIsMatch
+        })
+      }
     })
   },
 
