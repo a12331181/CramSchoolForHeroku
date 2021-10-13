@@ -4,6 +4,8 @@ const Teacher = db.Teacher
 const Calendar = db.Calendar
 const Meeting = db.Meeting
 const Student = db.Student
+const Diary = db.Diary
+const User = db.User
 
 const schoolController = {
   getSchoolIndexPage: (req, res) => {
@@ -18,14 +20,21 @@ const schoolController = {
   },
 
   getCourses : (req, res) => {
-    return Course.findAll({ 
-      raw: true,
-      nest: true, 
-      include: [ 
-        { model: Teacher }
-      ]
-    }).then(courses =>{
-      return res.render('courses', { courses: courses, isAdmin: req.user.isAdmin })
+    Promise.all([
+      Course.findAll({ 
+        raw: true,
+        nest: true, 
+        include: [ 
+          { model: Teacher }
+        ]
+      }),
+      User.findByPk(req.user.id, {
+        raw: true,
+        nest: true,
+        include: [Teacher]
+      })
+    ]).then(([courses, user]) => {
+      return res.render('courses', { courses: courses, isAdmin: req.user.isAdmin, user: user })
     })
   },
 
@@ -122,6 +131,111 @@ const schoolController = {
           .then((meeting) => {
             req.flash('success_messages', '已成功刪除會議記錄')
             res.redirect('/cramschool/meetings')
+          })
+      })
+  },
+
+  getDiaries: (req, res) => {
+    Promise.all([
+      Course.findByPk(req.params.id, {
+        include: [Diary]
+      }),
+      Course.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Teacher]
+      }),
+      User.findByPk(req.user.id, {
+        raw: true,
+        nest: true,
+        include: [Teacher]
+      })
+    ]).then(([course, teacher, user]) => {
+      if (course === null || teacher === null) {
+        console.log('Not found!')
+        return res.redirect('/cramschool/courses')
+      } else {
+        if (teacher.Teacher.id === user.Teacher.id) {
+          let diaries = course.Diaries.map(r => ({
+            ...r.dataValues
+          }))
+          return res.render('diaries', { course: course.toJSON(), diaries: diaries, teacher: teacher, user: user })
+        } else {
+          return res.redirect('/cramschool/courses')
+        }
+      }
+    })
+  },
+
+  getDiary: (req, res) => {
+    Diary.findOne({
+      raw: true,
+      nest: true,
+      where: {
+        id: req.params.diaryId
+      },
+      include: [Teacher]
+    }).then(diary => {
+      if (diary === null) {
+        console.log('Not found!')
+        return res.redirect('/cramschool/courses')
+      }
+      return res.render('diary', { diary: diary })
+    })
+  },
+
+  getCreateDiaryPage: (req, res) => {
+    Promise.all([
+      Course.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Teacher]
+      }),
+      User.findByPk(req.user.id, {
+        raw: true,
+        nest: true,
+        include: [Teacher]
+      })
+    ]).then(([course, user]) => {
+      if (course === null || user.Teacher.id === null) {
+        console.log('Not found!')
+        return res.redirect('/cramschool/courses')
+      } else {
+        res.render('creatediary', { course: course, user: user })
+      }
+    })
+  },
+
+  createDiary: (req, res) => {
+    Teacher.findOne({
+      raw: true,
+      nest: true,
+      where: {
+        UserId: req.user.id
+      }
+    }).then(teacher => {
+      return Diary.create({
+        date: req.body.date,
+        subject: req.body.subject,
+        content: req.body.content,
+        TeacherId: teacher.id,
+        CourseId: req.params.id,
+      })
+    }).then((diary) => {
+      let url = '/cramschool/courses/'+ String(req.params.id) + '/diaries'
+      req.flash('success_messages', '已成功建立教師日誌')
+      return res.redirect(url)
+    })
+  },
+
+  deleteDiary: (req, res) => {
+    return Diary.findByPk(req.params.diaryId)
+      .then((diary) => {
+        diary.destroy()
+          .then((diary) => {
+            let url = '/cramschool/courses/'+ String(req.params.courseId) + '/diaries'
+            req.flash('success_messages', '已成功刪除教師日誌')
+            res.redirect(url)
           })
       })
   },

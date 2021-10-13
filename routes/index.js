@@ -25,11 +25,18 @@ module.exports = (app, passport) => {
   //前台相關路由
   app.get('/', authenticated, (req, res) => res.redirect('/cramschool'))
   app.get('/cramschool', authenticated, schoolController.getSchoolIndexPage)
+  //會議記錄相關
   app.get('/cramschool/meetings', authenticated, schoolController.getMeetings)
   app.get('/cramschool/meetings/create', authenticatedAdmin, schoolController.getCreateMeetingPage)
   app.get('/cramschool/meetings/:id', authenticated, schoolController.getMeeting)
   app.post('/cramschool/meetings', authenticatedAdmin, schoolController.createMeeting)
   app.delete('/cramschool/meetings/:id', authenticatedAdmin, schoolController.deleteMeeting)
+  //教師日誌相關
+  app.get('/cramschool/courses/:id/diaries', authenticated, schoolController.getDiaries)
+  app.get('/cramschool/courses/:id/diaries/create', authenticated, schoolController.getCreateDiaryPage)
+  app.post('/cramschool/courses/:id/diaries', authenticated, schoolController.createDiary)
+  app.get('/cramschool/courses/:courseId/diaries/:diaryId', authenticated, schoolController.getDiary)
+  app.delete('/cramschool/courses/:courseId/diaries/:diaryId', authenticated, schoolController.deleteDiary)
   //課程相關路由
   app.get('/cramschool/courses', authenticated, schoolController.getCourses)
   app.get('/cramschool/courses/:id/calendar', authenticated, schoolController.getCourse)

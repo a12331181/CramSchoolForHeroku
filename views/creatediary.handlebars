@@ -1,0 +1,29 @@
+<br>
+
+<h3 style="color: rgb(199, 184, 145);"><strong>建立教師日誌</strong></h4>
+
+<br>
+
+<form action="/cramschool/courses/{{course.id}}/diaries" method="POST">
+  <div class="mb-3">
+    <label for="date" class="form-label">日期:</label>
+    <input type="date" class="form-control" id="date" name="date" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="subject" class="form-label">主題: </label>
+    <input type="text" class="form-control" id="subject" name="subject" placeholder="...輸入日誌主題" maxlength="40"
+        required>
+  </div>
+
+  <div class="mb-3">
+    <label for="content" class="form-label">內容: </label>
+    <textarea class="form-control" id="content" rows="3" name="content" placeholder="...輸入內容" required></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">送出</button>
+</form>
+
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>
