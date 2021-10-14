@@ -1,27 +1,46 @@
 <form class="form-signin" action="/signup" method="POST" style="width: 100%;">
   <div class="text-center mb-4">
-    <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
+    <h1 class="h3 mb-3 font-weight-normal">註冊帳號</h1>
   </div>
-  <div class="form-label-group">
-    <label for="inputName">Name</label>
-    <input type="text" name="name" class="form-control" placeholder="Name" required autofocus>
+  
+  <div class="form-label-group my-1">
+    <label for="inputRealName">教師姓名</label>
+    <input type="text" name="realName" class="form-control" placeholder="輸入真實姓名..." required>
   </div>
-  <div class="form-label-group">
-    <label for="inputEmail">Email</label>
-    <input type="text" name="email" class="form-control" placeholder="Email" required autofocus>
+
+  <div class="form-label-group my-1">
+    <label for="inputName">暱稱或ID</label>
+    <input type="text" name="name" class="form-control" placeholder="輸入暱稱或ID..." required autofocus>
   </div>
-  <div class="form-label-group">
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" class="form-control" placeholder="Password" required>
+
+  <div class="form-label-group my-1">
+    <label for="inputEmail">信箱</label>
+    <input type="text" name="email" class="form-control" placeholder="輸入信箱..." required>
   </div>
-  <div class="form-label-group">
-    <label for="inputPasswordCheck">Password Check</label>
-    <input type="password" name="passwordCheck" class="form-control" placeholder="Password Check" required>
+
+  <div class="form-label-group my-1">
+    <label for="inputPhone">聯絡電話</label>
+    <input type="text" name="phone" class="form-control" placeholder="輸入聯絡電話..." required>
   </div>
+
+  <div class="form-label-group my-1">
+    <label for="inputPassword">密碼</label>
+    <input type="password" name="password" class="form-control" placeholder="輸入密碼..." required>
+  </div>
+
+  <div class="form-label-group my-1">
+    <label for="inputPasswordCheck">密碼確認</label>
+    <input type="password" name="passwordCheck" class="form-control" placeholder="輸入密碼..." required>
+  </div>
+
   <br />
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">送出</button>
   <div class="text-center mb-4">
-    <p><a href="/signin">Sign In</a></p>
+    <p><a href="/signin">登入</a></p>
   </div>
-  <p class="mt-5 mb-3 text-muted text-center">© 2017-2018</p>
+  <p class="mt-5 mb-3 text-muted text-center">© 2021-2022</p>
 </form>
+
+
+
+

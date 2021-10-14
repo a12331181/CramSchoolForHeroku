@@ -1,8 +1,4 @@
-{{#if isTeacher}}
 <form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
-{{else}}
-<form action="/users" method="POST" enctype="multipart/form-data">
-{{/if}}
   <div class="form-group">
     <label for="name">教師名稱</label>
     <input type="text" class="form-control" name="name" id="name" placeholder="輸入教師名稱.." value="{{user.Teacher.name}}"
@@ -52,9 +48,5 @@
     <input type="file" class="form-control-file" id="image" name="image">
   </div>
 
-  {{#if isTeacher}}
   <button type="submit" class="btn btn-primary">更新個人資料</button>
-  {{else}}
-  <button type="submit" class="btn btn-primary">新增個人資料</button>
-  {{/if}}
 </form>

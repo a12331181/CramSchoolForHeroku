@@ -27,6 +27,11 @@ const userController = {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
           }).then(user => {
+            Teacher.create({
+              name: req.body.realName,
+              phone: req.body.phone,
+              UserId: user.id
+            })
             req.flash('success_messages', '成功註冊帳號！')
             return res.redirect('/signin')
           })  
@@ -51,36 +56,39 @@ const userController = {
   },
   //目前登錄先做老師這個身分的使用者
   getUser: (req, res) => {
-    return User.findByPk(req.params.id, {
-      include: { model: Teacher, include: { model: Course }}
-    }).then(user => {
+    Promise.all([
+      Teacher.findOne({
+        include: { model: Course },
+        where: { UserId: req.params.id }
+      }),
+      Teacher.findOne({
+        raw: true,
+        nest: true,
+        include: { model: User },
+        where: { UserId: req.params.id }
+      }),
+    ]).then(([teacher, userData]) => {
       let userIsMatch = true
       if (req.user.id !== Number(req.params.id)){
         userIsMatch = false
       }
-      user = user.dataValues
-      if (!user.Teacher) {
-        return res.render('userprofile', {
-          user: user,
-          userIsMatch: userIsMatch
-        })
+      if (teacher === null){
+        console.log('Not found!')
+        res.redirect('/cramschool/teachers')
       } else {
-        let teacher = user.Teacher.dataValues
         const courses = teacher.Courses.map(r => ({
           ...r.dataValues
         }))
         return res.render('userprofile', {
-          user: user,
-          teacher: teacher,
+          teacher: userData,
           courses: courses,
           userIsMatch: userIsMatch
-        })
+        })  
       }
     })
   },
 
   getEditUserPage: (req, res) => {
-    let isTeacher = true
     return User.findByPk(req.params.id, {
       raw:true,
       nest: true, 
@@ -89,54 +97,10 @@ const userController = {
       if (req.user.id !== Number(req.params.id)){
         return res.redirect(`/users/${req.user.id}`)
       }
-      if (!user.Teacher.id) {
-        isTeacher = false
-      }
       return res.render('editprofile', { 
-        user: user,
-        isTeacher: isTeacher
+        user: user
       })
     })
-  },
-  
-  postUser: (req, res) => {
-    const file = req.file
-    if (file) {
-      fs.readFile(file.path, (err, data) => {
-        if (err) console.log('Error: ', err)
-        fs.writeFile(`upload/${file.originalname}`, data, () => {
-          return Teacher.create({
-            name: req.body.name,
-            sex: req.body.sex,
-            birth: req.body.birth,
-            phone: req.body.phone,
-            address: req.body.address,
-            education: req.body.education,
-            school: req.body.school,
-            UserId: req.user.id,
-            image: file ? `/upload/${file.originalname}` : null
-          }).then((teacher) => {
-            req.flash('success_messages', 'user was successfully created')
-            res.redirect('/')
-          })
-        })
-      })
-    } else {
-      return Teacher.create({
-        name: req.body.name,
-        sex: req.body.sex,
-        birth: req.body.birth,
-        phone: req.body.phone,
-        address: req.body.address,
-        education: req.body.education,
-        school: req.body.school,
-        UserId: req.user.id,
-        image: null
-      }).then((teacher) => {
-        req.flash('success_messages', 'user was successfully created')
-        res.redirect('/')
-      })      
-    }
   },
 
   putUser: (req, res) => {

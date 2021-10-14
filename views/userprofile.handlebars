@@ -17,12 +17,12 @@
         <p class="card-text"><strong>性別 : </strong>{{teacher.sex}}</p>
         <p class="card-text"><strong>生日 : </strong>{{teacher.birth}}</p>
         <p class="card-text"><strong>電話 : </strong>{{teacher.phone}}</p>
-        <p class="card-text"><strong>信箱 : </strong>{{user.email}}</p>
+        <p class="card-text"><strong>信箱 : </strong>{{teacher.User.email}}</p>
         <p class="card-text"><strong>地址 : </strong>{{teacher.address}}</p>
         <p class="card-text"><strong>最高學歷 : </strong>{{teacher.education}}</p>
         <p class="card-text"><strong>學校 : </strong>{{teacher.school}}</p>
         {{#if userIsMatch}}
-        <a href="/users/{{user.id}}/edit">
+        <a href="/users/{{teacher.User.id}}/edit">
           <button type="button" class="btn btn-primary">新增/修改個人資料</button>
         </a>
         {{/if}}

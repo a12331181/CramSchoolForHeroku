@@ -105,7 +105,6 @@ module.exports = (app, passport) => {
   //user profile 相關路由
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.getEditUserPage)
-  app.post('/users', authenticated, upload.single('image'), userController.postUser)
   app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
   //註冊.登錄與登出路由
   app.get('/signup', userController.signUpPage)

@@ -8,8 +8,7 @@ const teacherController = {
       include: [User]
     }).then(teachers => {
       const data = teachers.map(r => ({
-        ...r.dataValues,
-        ...r.dataValues.User.dataValues,
+        ...r.dataValues
       }))
       return res.render('teachers',{ teachers: data, isAdmin: req.user.isAdmin })
     })
