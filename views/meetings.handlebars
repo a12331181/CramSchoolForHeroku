@@ -1,32 +1,6 @@
 <br>
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" href="/cramschool">首頁</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/cramschool/courses">課程總表</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/cramschool/teachers">老師總表</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/cramschool/students">學生總表</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="/cramschool/meetings">會議記錄</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/cramschool/attend">課程點名</a>
-  </li>
-  {{#if isAdmin}}
-  <li class="nav-item">
-    <a class="nav-link" href="/cramschool/payment">學費計算</a>
-  </li>
-  {{/if}}
-</ul>
-
-<br>
+<h3 class="ml-2" style="color: rgb(75, 66, 57);">會議記錄列表</h3>
 
 <table class="table table-bordered">
   <thead>
@@ -44,13 +18,13 @@
       <td>{{this.date}}</td>
       <td>{{this.subject}}</td>
       <td>
-        <a href="/cramschool/meetings/{{this.id}}" class="btn btn-dark my-1">
+        <a href="/cramschool/meetings/{{this.id}}" class="btn btn-dark btn-sm my-1">
           會議內容
         </a>
         {{#if ../isAdmin}}
         <form action="/cramschool/meetings/{{this.id}}?_method=DELETE" method="POST"
           style="display: inline;">
-          <button type="submit" class="btn btn-danger btn ml-1 my-1">刪除</button>
+          <button type="submit" class="btn btn-danger btn-sm ml-1 my-1">刪除</button>
         </form>
         {{/if}}
       </td>
@@ -60,8 +34,32 @@
 </table>
 
 {{#if isAdmin}}
-<a href="/cramschool/meetings/create" class="btn btn-primary">建立會議記錄</a>
+<a href="/cramschool/meetings/create" class="btn btn-primary mb-2">建立會議記錄</a>
 {{/if}}
 
 <br />
 <br />
+<a class="ml-2" href="/cramschool">回到主頁面</a>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a class="page-link" href="/cramschool/meetings?page={{prev}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+    {{#ifCond this ../page}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+    <li class="page-item"><a class="page-link"
+        href="/cramschool/meetings?page={{this}}">{{this}}</a></li>
+    {{/ifCond}}
+    {{/each}}
+    <li class="page-item"><a class="page-link" href="/cramschool/meetings?page={{next}}"
+        aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
