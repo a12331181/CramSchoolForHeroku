@@ -6,16 +6,26 @@ const Meeting = db.Meeting
 const Student = db.Student
 const Diary = db.Diary
 const User = db.User
+const pageLimit = 10
 
 const schoolController = {
   getSchoolIndexPage: (req, res) => {
-    Meeting.findAll({ 
-      raw: true,
-      nest: true,
-      limit: 2,
-      order: [['createdAt', 'DESC']]
-    }).then(meetings => {
-      return res.render('cramschool', { isAdmin: req.user.isAdmin, meetings: meetings })
+    Promise.all([
+      Meeting.findAll({ 
+        raw: true,
+        nest: true,
+        limit: 2,
+        order: [['createdAt', 'DESC']]
+      }),
+      Diary.findAll({ 
+        raw: true,
+        nest: true,
+        limit: 4,
+        include: [{ model: Course, include: [{ model: Teacher}] }],
+        order: [['createdAt', 'DESC']]
+      }),
+    ]).then(([meetings, diaries]) => {
+      return res.render('cramschool', { isAdmin: req.user.isAdmin, meetings: meetings, diaries: diaries})
     })
   },
 
@@ -131,6 +141,46 @@ const schoolController = {
           .then((meeting) => {
             req.flash('success_messages', '已成功刪除會議記錄')
             res.redirect('/cramschool/meetings')
+          })
+      })
+  },
+  
+  getDiariesList: (req, res) => {
+    let offset = 0
+    if (req.query.page) {
+      offset = (req.query.page - 1) * pageLimit
+    }
+    Diary.findAndCountAll({ 
+      raw: true,
+      nest: true,
+      include: [{ model: Course, include: [{ model: Teacher}] }],
+      offset: offset,
+      limit: pageLimit,
+      order: [['createdAt', 'DESC']]
+    }).then(diaries => {
+      const page = Number(req.query.page) || 1
+      const pages = Math.ceil(diaries.count / pageLimit)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+      return res.render('diarieslist',{ 
+        diaries: diaries.rows, 
+        isAdmin: req.user.isAdmin,
+        page: page,
+        totalPage: totalPage,
+        prev: prev,
+        next: next
+      })
+    })
+  },
+
+  deleteDiaryInList: (req, res) => {
+    return Diary.findByPk(req.params.id)
+      .then((diary) => {
+        diary.destroy()
+          .then((diary) => {
+            req.flash('success_messages', '已成功刪除教師日誌')
+            res.redirect('/cramschool/diaries')
           })
       })
   },
