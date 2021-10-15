@@ -3,7 +3,7 @@
 <h1>{{course.name}}</h1>
 <h4 class="ml-2" style="color: rgb(182, 190, 202)">課程行事曆</h4>
 
-<table class="table">
+<table class="table table-bordered">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
@@ -15,7 +15,7 @@
   </thead>
   <tbody>
     {{#each calendars}}
-    <tr>
+    <tr class="table-light">
       <th scope="row">{{this.id}}</th>
       <td>{{this.date}}</td>
       <td>第{{this.period}}期</td>
@@ -50,7 +50,7 @@
 <br />
 
 <nav aria-label="Page navigation example">
-  <ul class="pagination">
+  <ul class="pagination justify-content-center">
     <li class="page-item">
       <a class="page-link" href="/admin/courses/{{course.id}}/calendar?page={{prev}}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>

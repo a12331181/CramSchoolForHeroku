@@ -282,9 +282,75 @@ const adminController = {
   },
   // 學生相關程式碼
   getStudents: (req, res) => {
-    return Student.findAll({raw: true}).then(students =>{
-      return res.render('admin/students', { students: students })
-    })
+    let offset = 0
+    let isFilter = false
+    const whereQuery = {}
+    let courseId = ''
+    if (req.query.page) {
+      offset = (Number(req.query.page) - 1) * pageLimit
+    }
+    if (req.query.courseId) {
+      courseId = Number(req.query.courseId)
+      whereQuery.id = courseId
+      Student.findAndCountAll({
+        raw: true,
+        nest: true,
+        include: [{ model: Course, as: 'EnrolledCourses', where: whereQuery }],
+        limit: pageLimit,
+        offset: offset
+      }).then(result => {
+        const page = Number(req.query.page) || 1
+        const pages = Math.ceil(result.count / pageLimit)
+        const totalPage = Array.from({ length: pages }).map((v, index) => index + 1)
+        const prev = page - 1 < 1 ? 1 : page - 1
+        const next = page + 1 > pages ? pages : page + 1
+        isFilter = true
+        Course.findAll({
+          raw: true,
+          nest: true
+        }).then(courses => {
+          return res.render('admin/students', { 
+            students: result.rows,
+            courses: courses,
+            courseId: whereQuery.id,
+            isFilter: isFilter,
+            page: page,
+            totalPage: totalPage,
+            prev: prev,
+            next: next,
+            isAdmin: req.user.isAdmin
+          })
+        })
+      })
+    } else {
+      Student.findAndCountAll({
+        raw: true,
+        nest: true,
+        limit: pageLimit,
+        offset: offset
+      }).then(result => {
+        const page = Number(req.query.page) || 1
+        const pages = Math.ceil(result.count / pageLimit)
+        const totalPage = Array.from({ length: pages }).map((v, index) => index + 1)
+        const prev = page - 1 < 1 ? 1 : page - 1
+        const next = page + 1 > pages ? pages : page + 1
+        Course.findAll({
+          raw: true,
+          nest: true
+        }).then(courses => {
+          return res.render('admin/students', { 
+            students: result.rows,
+            courses: courses,
+            isFilter: isFilter,
+            page: page,
+            totalPage: totalPage,
+            prev: prev,
+            next: next,
+            isAdmin: req.user.isAdmin
+          })
+        })
+      })
+    }
   },
   getCreateStudentPage: (req, res) => {
     return res.render('admin/createstudent')

@@ -20,7 +20,21 @@
   </li>
 </ul>
 
-<table class="table">
+<br>
+
+<form action="/admin/students">
+  <div class="form-group d-flex justify-content-center">
+    <label class="mr-2 mt-1" for="courseId"><strong style="color: rgb(83, 6, 6);">篩選: </strong></label>
+    <select name="courseId" id="courseId" class="form-control-sm col-8" onchange="this.form.submit()">
+      <option value="" {{#ifCond '' courseId}} selected{{/ifCond}}>全部學生</option>
+      {{#each courses}}
+      <option value="{{this.id}}" {{#ifCond this.id ../courseId}} selected{{/ifCond}}>{{this.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+</form>
+
+<table class="table table-bordered">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
@@ -33,7 +47,7 @@
   </thead>
   <tbody>
     {{#each students}}
-    <tr>
+    <tr class="table-light">
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.sex}}</td>
@@ -71,3 +85,26 @@
 <a href='/admin/students/create'>
   <button type="button" class="btn btn-primary">新增學生</button>
 </a>
+
+<br />
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a class="page-link" href="/cadmin/students?page={{prev}}&courseId={{courseId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+    {{#ifCond this ../page}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+    <li class="page-item"><a class="page-link"
+        href="/admin/students?page={{this}}&courseId={{../courseId}}">{{this}}</a></li>
+    {{/ifCond}}
+    {{/each}}
+    <a class="page-link" href="/admin/students?page={{next}}&courseId={{courseId}}" aria-label="Next">
+      <span aria-hidden="true">&raquo;</span>
+    </a>
+    </li>
+  </ul>
+</nav>
