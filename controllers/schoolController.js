@@ -14,7 +14,7 @@ const schoolController = {
       Meeting.findAll({ 
         raw: true,
         nest: true,
-        limit: 4,
+        limit: 5,
         order: [['createdAt', 'DESC']]
       }),
       Diary.findAll({ 
@@ -112,12 +112,17 @@ const schoolController = {
   },
   
   getMeeting: (req, res) => {
-    Meeting.findByPk(req.params.id,{
+    Meeting.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Teacher]
     }).then(meeting => {
-      return res.render('meeting',{ meeting: meeting })
+      if (meeting === null) {
+        console.log('Not found!')
+        res.redirect('/cramschool/meetings')
+      } else {
+        return res.render('meeting',{ meeting: meeting })
+      }
     })
   },
 

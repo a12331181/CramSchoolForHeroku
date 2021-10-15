@@ -27,9 +27,9 @@ module.exports = (app, passport) => {
   app.get('/cramschool', authenticated, schoolController.getSchoolIndexPage)
   //會議記錄相關
   app.get('/cramschool/meetings', authenticated, schoolController.getMeetings)
-  app.get('/cramschool/meetings/create', authenticatedAdmin, schoolController.getCreateMeetingPage)
+  app.get('/cramschool/meetings/create', authenticated, schoolController.getCreateMeetingPage)
   app.get('/cramschool/meetings/:id', authenticated, schoolController.getMeeting)
-  app.post('/cramschool/meetings', authenticatedAdmin, schoolController.createMeeting)
+  app.post('/cramschool/meetings', authenticated, schoolController.createMeeting)
   app.delete('/cramschool/meetings/:id', authenticatedAdmin, schoolController.deleteMeeting)
   //教師日誌相關
   app.delete('/cramschool/diaries/:id', authenticatedAdmin, schoolController.deleteDiaryInList)
