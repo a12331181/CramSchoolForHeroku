@@ -205,33 +205,44 @@ const schoolController = {
   },
 
   getDiaries: (req, res) => {
+    let offset = 0
+    if (req.query.page) {
+      offset = (req.query.page - 1) * pageLimit
+    }
     Promise.all([
-      Course.findByPk(req.params.id, {
-        include: [Diary]
+      Diary.findAndCountAll({
+        raw: true,
+        nest: true,
+        where: { 
+          CourseId: req.params.id
+        },
+        include: { model: Course, include: { model: Teacher }},
+        offset: offset,
+        limit: pageLimit,
+        order: [['createdAt', 'DESC']]      
       }),
       Course.findByPk(req.params.id, {
         raw: true,
-        nest: true,
-        include: [Teacher]
-      }),
-      User.findByPk(req.user.id, {
-        raw: true,
-        nest: true,
-        include: [Teacher]
+        nest: true
       })
-    ]).then(([course, teacher, user]) => {
-      if (course === null || teacher === null) {
+    ]).then(([diaries, course]) => {
+      const page = Number(req.query.page) || 1
+      const pages = Math.ceil(diaries.count / pageLimit)
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+      const prev = page - 1 < 1 ? 1 : page - 1
+      const next = page + 1 > pages ? pages : page + 1
+      if (course === null) {
         console.log('Not found!')
         return res.redirect('/cramschool/courses')
       } else {
-        if (teacher.Teacher.id === user.Teacher.id) {
-          let diaries = course.Diaries.map(r => ({
-            ...r.dataValues
-          }))
-          return res.render('diaries', { course: course.toJSON(), diaries: diaries, teacher: teacher, user: user })
-        } else {
-          return res.redirect('/cramschool/courses')
-        }
+        res.render('diaries', { 
+          diaries: diaries.rows, 
+          course: course,
+          page: page,
+          totalPage: totalPage,
+          prev: prev,
+          next: next
+        })
       }
     })
   },
