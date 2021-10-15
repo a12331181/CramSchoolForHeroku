@@ -371,7 +371,7 @@ const adminController = {
             address: req.body.address,
             image: file ? `/upload/${file.originalname}` : null
           }).then((student) => {
-            req.flash('success_messages', 'Student was successfully created.')
+            req.flash('success_messages', '成功建立學生資料')
             return res.redirect('/admin/students')
           })
         })
@@ -387,7 +387,7 @@ const adminController = {
         address: req.body.address,
         image: null
       }).then((student) => {
-        req.flash('success_messages', 'Student was successfully created')
+        req.flash('success_messages', '成功建立學生資料')
         return res.redirect('/admin/students')
       })
     }
@@ -422,7 +422,7 @@ const adminController = {
                 address: req.body.address,
                 image: file ? `/upload/${file.originalname}` : student.image
               }).then((student) => {
-                req.flash('success_messages', 'Student was successfully to update.')
+                req.flash('success_messages', '成功更新學生資料')
                 return res.redirect('/admin/students')
               })
             })
@@ -441,7 +441,7 @@ const adminController = {
             address: req.body.address,
             image: student.image
           }).then((student) => {
-            req.flash('success_messages', 'Student was successfully to update.')
+            req.flash('success_messages', '成功更新學生資料')
             return res.redirect('/admin/students')
           })
         })
@@ -452,6 +452,7 @@ const adminController = {
       .then((student) => {
         student.destroy()
           .then((student) => {
+            req.flash('success_messages', '成功刪除學生資料')
             res.redirect('/admin/students')
           })
       })
@@ -480,8 +481,9 @@ const adminController = {
       StudentId: req.params.studentId,
       CourseId: req.params.courseId
     }).then((student) => {
-        return res.redirect('back')
-      })
+      req.flash('success_messages', '成功註冊課程')
+      return res.redirect('back')
+    })
   },
   removeEnrollment: (req, res) => {
     return Enrollment.findOne({
@@ -492,6 +494,7 @@ const adminController = {
     }).then((enrollment) => {
         enrollment.destroy()
           .then((enrollment) => {
+            req.flash('success_messages', '成功註銷課程')
             return res.redirect('back')
           })
       })
