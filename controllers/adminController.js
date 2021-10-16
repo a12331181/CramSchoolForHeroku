@@ -226,7 +226,7 @@ const adminController = {
           isAdmin: !user.isAdmin
         })
         .then((user) => {
-          req.flash('success_messages', 'isAdmin was successfully to update')
+          req.flash('success_messages', '使用者權限已更新')
           res.redirect('/admin/users')
         })
       })
@@ -243,14 +243,24 @@ const adminController = {
       nest: true, 
       include: [User]
     }).then(teacher => {
-      return res.render('admin/teacher', {
-        teacher: teacher
-      })
+      if (teacher === null){
+        console.log('Not found!')
+        res.redirect('/admin/teachers')
+      } else {
+        return res.render('admin/teacher', {
+          teacher: teacher
+        })
+      }
     })
   },
   editTeacher: (req, res) => {
     return Teacher.findByPk(req.params.id, {raw:true}).then(teacher => {
-      return res.render('admin/editteacher', { teacher: teacher } )
+      if (teacher ===null) {
+        console.log('Not found!')
+        res.redirect('/admin/teachers')
+      } else {
+        return res.render('admin/editteacher', { teacher: teacher } )       
+      }
     })
   },
   putTeacher: (req, res) => {
@@ -266,18 +276,9 @@ const adminController = {
           school: req.body.school
         })
         .then((teacher) => {
-          req.flash('success_messages', 'teacher was successfully to update')
+          req.flash('success_messages', '成功修改教師資料')
           res.redirect('/admin/teachers')
         })
-      })
-  },
-  deleteTeacher: (req, res) => {
-    return Teacher.findByPk(req.params.id)
-      .then((teacher) => {
-        teacher.destroy()
-          .then((teacher) => {
-            res.redirect('/admin/teachers')
-          })
       })
   },
   // 學生相關程式碼
