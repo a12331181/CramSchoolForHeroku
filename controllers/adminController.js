@@ -6,6 +6,7 @@ const Student = db.Student
 const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const fs = require('fs')
+const moment = require('moment')
 const pageLimit = 12
 
 const adminController = {
@@ -43,7 +44,7 @@ const adminController = {
       for (let i = 0; i < Number(course.amounts); i++) {
         calendarList.push(
           {
-            date: '2021-01-01', //日期,內容為預設值
+            date: moment().format('YYYY-MM-DD'), //日期,內容為預設值
             content: i,
             CourseId: course.id,
             period: 1
@@ -51,7 +52,7 @@ const adminController = {
         )
       }
       Calendar.bulkCreate(calendarList).then(calendars => {
-        req.flash('success_messages', 'Course was successfully created.')
+        req.flash('success_messages', '課程已成功被創建')
         res.redirect('/admin/courses')
       }) 
     })
@@ -88,7 +89,7 @@ const adminController = {
           TeacherId: req.body.teacherId
         })
         .then((course) => {
-          req.flash('success_messages', 'course was successfully to update')
+          req.flash('success_messages', '課程已成功被修改')
           res.redirect('/admin/courses')
         })
       })
@@ -98,6 +99,7 @@ const adminController = {
       .then((course) => {
         course.destroy()
           .then((course) => {
+            req.flash('success_messages', '已成功刪除課程')
             res.redirect('/admin/courses')
           })
       })
@@ -165,7 +167,7 @@ const adminController = {
       for (let i = 0; i < Number(course.amounts); i++) {
         calendarList.push(
           {
-            date: '2021-01-01', //日期,內容為預設值
+            date: moment().format('YYYY-MM-DD'), //日期,內容為預設值
             content: i,
             CourseId: course.id,
             period: period + 1
@@ -173,8 +175,9 @@ const adminController = {
         )
       }
       Calendar.bulkCreate(calendarList).then(calendars => {
-        req.flash('success_messages', '已成功新增下一期課程')
-        res.redirect('/admin/courses')
+        let url = '/admin/courses/'+ String(req.params.id) + '/calendar'
+        req.flash('success_messages', '已成功新增下一期課程行事曆')
+        res.redirect(url)
       }) 
     })
   },
@@ -191,8 +194,9 @@ const adminController = {
           content: req.body.content
         })
         .then((calendar) => {
-          req.flash('success_messages', 'calendar was successfully to update')
-          res.redirect('/admin/courses')
+          let url = '/admin/courses/'+ String(req.params.id) + '/calendar'
+          req.flash('success_messages', '已成功更新課程行事曆')
+          res.redirect(url)
         })
       })
   },
@@ -202,14 +206,28 @@ const adminController = {
         CourseId: req.params.id
       }
     }).then(period => {
-      Calendar.destroy({
+      Calendar.findAll({
         where: {
+          period: period,
           CourseId: req.params.id,
-          period: period
+          isActive: false
         }
-      }).then((calendars) => {
-        req.flash('success_messages', '已成功刪除最新一期課程')
-        res.redirect('/admin/courses')
+      }).then(calendars => {
+        let url = '/admin/courses/'+ String(req.params.id) + '/calendar'
+        if (calendars.length !== 0) {
+          req.flash('error_messages', '此期課程已進行，故刪除失敗')
+          res.redirect(url)
+        } else {
+          Calendar.destroy({
+            where: {
+              CourseId: req.params.id,
+              period: period
+            }
+          }).then(() => {
+            req.flash('success_messages', '已成功刪除最新一期課程')
+            res.redirect(url)
+          })
+        }
       })
     })
   },
