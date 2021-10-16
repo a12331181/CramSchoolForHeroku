@@ -25,6 +25,7 @@ module.exports = (app, passport) => {
   //前台相關路由
   app.get('/', authenticated, (req, res) => res.redirect('/cramschool'))
   app.get('/cramschool', authenticated, schoolController.getSchoolIndexPage)
+  app.get('/cramschool/introduction', authenticated, schoolController.getIntroduction)
   //會議記錄相關
   app.get('/cramschool/meetings', authenticated, schoolController.getMeetings)
   app.get('/cramschool/meetings/create', authenticated, schoolController.getCreateMeetingPage)

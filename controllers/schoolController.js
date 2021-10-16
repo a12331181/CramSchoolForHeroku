@@ -28,8 +28,12 @@ const schoolController = {
       return res.render('cramschool', { isAdmin: req.user.isAdmin, meetings: meetings, diaries: diaries})
     })
   },
+  
+  getIntroduction: (req, res) => {
+    return res.render('introduction')
+  },
 
-  getCourses : (req, res) => {
+  getCourses: (req, res) => {
     Promise.all([
       Course.findAll({ 
         raw: true,
@@ -48,7 +52,7 @@ const schoolController = {
     })
   },
 
-  getCourse : (req, res) => {
+  getCourse: (req, res) => {
     Calendar.max('period', {
       where: {
         CourseId: req.params.id
