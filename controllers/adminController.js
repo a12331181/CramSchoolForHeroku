@@ -16,7 +16,10 @@ const adminController = {
   },
   // 課程相關程式碼
   getCourses : (req, res) => {
-    return Course.findAll({raw: true}).then(courses =>{
+    return Course.findAll({
+      raw: true,
+      nest: true
+    }).then(courses =>{
       return res.render('admin/courses', { courses: courses })
     })
   },
@@ -57,23 +60,24 @@ const adminController = {
       }) 
     })
   },
-  getCourse: (req, res) => {
-    return Course.findByPk(req.params.id, {raw:true}).then(course => {
-      return res.render('admin/course', {
-        course: course
-      })
-    })
-  },
   editCourse: (req, res) => {
     Teacher.findAll({
       raw: true,
       nest: true
     }).then(teachers => {
-      return Course.findByPk(req.params.id, {raw:true}).then(course => {
-        return res.render('admin/createcourse', { 
-          course: course,
-          teachers: teachers
-        })
+      return Course.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      }).then(course => {
+        if (course === null) {
+          console.log('Not found!')
+          res.redirect('/admin/courses')
+        } else {
+          return res.render('admin/createcourse', { 
+            course: course,
+            teachers: teachers
+          })
+        }
       })
     })
   },
@@ -128,73 +132,104 @@ const adminController = {
         limit: pageLimit
       })
     ]).then(([calendarPeriod, course, result]) =>{
-      let isPeriodNotEqualOne = true
-      if (calendarPeriod === 1) {
-        isPeriodNotEqualOne = false
+      if (course === null) {
+        console.log('Not found')
+        res.redirect('/admin/courses')
+      } else {
+        let isPeriodNotEqualOne = true
+        if (calendarPeriod === 1) {
+          isPeriodNotEqualOne = false
+        }
+        const page = Number(req.query.page) || 1
+        const pages = Math.ceil(result.count / pageLimit)
+        const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+        const prev = page - 1 < 1 ? 1 : page - 1
+        const next = page + 1 > pages ? pages : page + 1
+        const calendars = result.rows.map(r => ({
+          ...r.dataValues
+        }))
+        return res.render('admin/course', { 
+          course: course, 
+          calendars: calendars, 
+          isPeriodNotEqualOne: isPeriodNotEqualOne,
+          page: page,
+          totalPage: totalPage,
+          prev: prev,
+          next: next
+        })
       }
-      const page = Number(req.query.page) || 1
-      const pages = Math.ceil(result.count / pageLimit)
-      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
-      const prev = page - 1 < 1 ? 1 : page - 1
-      const next = page + 1 > pages ? pages : page + 1
-      const calendars = result.rows.map(r => ({
-        ...r.dataValues
-      }))
-      return res.render('admin/course', { 
-        course: course, 
-        calendars: calendars, 
-        isPeriodNotEqualOne: isPeriodNotEqualOne,
-        page: page,
-        totalPage: totalPage,
-        prev: prev,
-        next: next
-      })
     })
   },
   postNextPeriodCalendar: (req, res) => {
-    Promise.all([
-      Calendar.max('period', {
-        where: {
-          CourseId: req.params.id
-        }
-      }),
-      Course.findByPk(req.params.id, {
-        raw: true,
-        nest: true
-      })
-    ]).then(([period, course]) => {
-      let calendarList = []
-      for (let i = 0; i < Number(course.amounts); i++) {
-        calendarList.push(
-          {
-            date: moment().format('YYYY-MM-DD'), //日期,內容為預設值
-            content: i,
-            CourseId: course.id,
-            period: period + 1
-          }
-        )
+    Calendar.max('period', {
+      where: {
+        CourseId: req.params.id
       }
-      Calendar.bulkCreate(calendarList).then(calendars => {
+    }).then(period => {
+      Course.findByPk(req.params.id, {
+        include: { 
+          model: Calendar, where: { period: period, isActive: false }
+        }
+      }).then(course => {
         let url = '/admin/courses/'+ String(req.params.id) + '/calendar'
-        req.flash('success_messages', '已成功新增下一期課程行事曆')
-        res.redirect(url)
-      }) 
+        if (course === null) {
+          console.log('Not found!')
+          req.flash('error_messages', '目前已為最新一期課程行事曆，故新增失敗')
+          res.redirect(url)
+        } else {
+          if (course.amounts === course.Calendars.length) {
+            console.log('The course is end!')
+            let calendarList = []
+            for (let i = 0; i < Number(course.amounts); i++) {
+              calendarList.push(
+                {
+                  date: moment().format('YYYY-MM-DD'), //日期,內容為預設值
+                  content: i,
+                  CourseId: course.id,
+                  period: period + 1
+                }
+              )
+            }
+            Calendar.bulkCreate(calendarList).then(calendars => {
+              req.flash('success_messages', '已成功新增下一期課程行事曆')
+              res.redirect(url)
+            }) 
+          } else {
+            console.log('The course is not end!')
+            req.flash('error_messages', '此期課程尚未結束，故無法新增下一期課程行事曆')
+            res.redirect(url)
+          }
+        }
+      })
     })
   },
   editCalendar: (req, res) => {
-    return Calendar.findByPk(req.params.id, {raw:true}).then(calendar => {
-      return res.render('admin/editcalendar',{ calendar: calendar })
+    Calendar.findByPk(req.params.calendarId, {
+      include: [Course]
+    }).then(calendar => {
+      let url = '/admin/courses/'+ String(req.params.courseId) + '/calendar'
+      if (calendar === null) {
+        console.log('Not found!')
+        res.redirect(url)
+      } else {
+        if (calendar.isActive === false) {
+          console.log('Not open!')
+          res.redirect(url)
+        } else {
+          return res.render('admin/editcalendar',{ calendar: calendar.toJSON() })
+        }
+      }
     })
   },
   putCalendar: (req, res) => {
-    return Calendar.findByPk(req.params.id)
+    return Calendar.findByPk(req.params.calendarId)
       .then((calendar) => {
         calendar.update({
           date: req.body.date,
           content: req.body.content
         })
         .then((calendar) => {
-          let url = '/admin/courses/'+ String(req.params.id) + '/calendar'
+          let url = '/admin/courses/'+ String(req.params.courseId) + '/calendar'
           req.flash('success_messages', '已成功更新課程行事曆')
           res.redirect(url)
         })
@@ -229,6 +264,28 @@ const adminController = {
           })
         }
       })
+    })
+  },
+  closeCalendar: (req, res) => {
+    Calendar.findByPk(req.params.calendarId)
+      .then(calendar => {
+        calendar.update({
+          isActive: false
+        }).then(() => {
+          req.flash('success_messages', '已成功關閉行事曆')
+          return res.redirect('back')
+        })
+    })
+  },
+  openCalendar: (req, res) => {
+    Calendar.findByPk(req.params.calendarId)
+      .then(calendar => {
+        calendar.update({
+          isActive: true
+        }).then(() => {
+          req.flash('success_messages', '已成功開啟行事曆')
+          return res.redirect('back')
+        })
     })
   },
   // 使用者相關程式碼
