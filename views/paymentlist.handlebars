@@ -43,6 +43,11 @@
       {{/if}}
     </tr>
     {{/each}}
+    {{#if isPaymentNotExist}}
+    <tr class="table-light">
+      <th colspan="7" style="color: rgb(192, 72, 16);text-align: center;">目前暫時無收費紀錄</th>
+    </tr>
+    {{/if}}
   </tbody>
 </table>
 

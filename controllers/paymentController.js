@@ -20,9 +20,17 @@ const schoolController = {
     return Course.findByPk(req.params.id,{
       include: [{ model: Student, as: 'EnrolledStudents' }]
     }).then(course => {
-      course = course.toJSON()
-      let students = course.EnrolledStudents
-      return res.render('studentspayment', { course: course, students: students })
+      if (course === null) {
+        console.log('Not found!')
+        res.redirect('/cramschool/payment')
+      } else {
+        course = course.toJSON()
+        let students = course.EnrolledStudents
+        return res.render('studentspayment', { 
+          course: course, 
+          students: students 
+        })
+      }
     })
   },
 
@@ -36,12 +44,26 @@ const schoolController = {
         nest: true
       })
     ]).then(([enrollment, course]) => {
-      Student.findByPk(enrollment.StudentId,{
-        raw: true,
-        nest: true
-      }).then(student => {
-        return res.render('paymentlist', { enrollment: enrollment.toJSON(), course: course, student: student })
-      })
+      if (enrollment === null || course === null) {
+        console.log('Not found')
+        res.redirect('/cramschool/payment')
+      } else {
+        Student.findByPk(enrollment.StudentId,{
+          raw: true,
+          nest: true
+        }).then(student => {
+          let isPaymentNotExist = true
+          if (enrollment.dataValues.Payments.length > 0){
+            isPaymentNotExist = false
+          }
+          return res.render('paymentlist', { 
+            enrollment: enrollment.toJSON(), 
+            course: course, 
+            student: student,
+            isPaymentNotExist : isPaymentNotExist
+          })
+        })
+      }
     })
   },
 
@@ -57,7 +79,15 @@ const schoolController = {
         nest: true
       })
     ]).then(([enrollment, course]) => {
-      return res.render('createpayment', { enrollment: enrollment, course: course })
+      if (enrollment === null || course === null) {
+        console.log('Not found')
+        res.redirect('/cramschool/payment')
+      } else {
+        return res.render('createpayment', { 
+          enrollment: enrollment, 
+          course: course 
+        })        
+      }
     })
   },
 
