@@ -469,15 +469,31 @@ const adminController = {
     }
   },
   getStudent: (req, res) => {
-    return Student.findByPk(req.params.id, {raw:true}).then(student => {
-      return res.render('admin/student', {
-        student: student
-      })
+    Student.findByPk(req.params.id, {
+      raw: true,
+      nest: true
+    }).then(student => {
+      if (student === null) {
+        console.log('Not found!')
+        res.redirect('/admin/students')
+      } else {
+        return res.render('admin/student', {
+          student: student
+        })
+      }
     })
   },
   editStudent: (req, res) => {
-    return Student.findByPk(req.params.id, {raw:true}).then(student => {
-      return res.render('admin/createstudent', { student: student } )
+    Student.findByPk(req.params.id, {
+      raw: true,
+      nest: true
+    }).then(student => {
+      if (student === null) {
+        console.log('Not found!')
+        res.redirect('/admin/students')
+      } else {
+        return res.render('admin/createstudent', { student: student } )        
+      }
     })
   },
   putStudent: (req, res) => {
@@ -539,17 +555,22 @@ const adminController = {
         { model: Course, as: 'EnrolledCourses' }
       ]
     }).then(student =>{
-      Course.findAll({ 
-        include: [ 
-          { model: Student, as: 'EnrolledStudents' }
-        ]
-       }).then(courses =>{
-        const data = courses.map(r => ({
-        ...r.dataValues,
-        isEnrolled: student.EnrolledCourses.map(d => d.id).includes(r.id)
-      }))
-        return res.render('admin/enrollcourse', { student: student.toJSON(), courses: data })
-      })
+      if (student === null) {
+        console.log('Not found!')
+        res.redirect('/admin/students')
+      } else {
+        Course.findAll({ 
+          include: [ 
+            { model: Student, as: 'EnrolledStudents' }
+          ]
+        }).then(courses =>{
+          const data = courses.map(r => ({
+            ...r.dataValues,
+            isEnrolled: student.EnrolledCourses.map(d => d.id).includes(r.id)
+          }))
+          return res.render('admin/enrollcourse', { student: student.toJSON(), courses: data })
+        })
+      }
     })
   },
   addEnrollment: (req, res) => {
