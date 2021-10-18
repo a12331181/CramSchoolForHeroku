@@ -58,21 +58,37 @@ const schoolController = {
         CourseId: req.params.id
       }
     }).then(currentPeriod => {
-      Course.findByPk(req.params.id, {
-        include: {
-          model: Calendar,
-          where: { period: currentPeriod }
-        },
-        order: [[Calendar, 'date', 'ASC']]
-      }).then(course =>{
-        const data = course.dataValues.Calendars
-        const calendars = data.map(r => ({
-          ...r.dataValues
-        }))
-        const firstCalendarDate = calendars[0].date
-        const lastCalendarDate = calendars[calendars.length -1].date
-        return res.render('course', { course: course.dataValues, calendars: calendars, currentPeriod: currentPeriod, firstCalendarDate: firstCalendarDate, lastCalendarDate: lastCalendarDate })
-      })
+      if (isNaN(currentPeriod)) {
+        console.log('Not found!')
+        res.redirect('/cramschool/courses')
+      } else {
+        Course.findByPk(req.params.id, {
+          include: {
+            model: Calendar,
+            where: { period: currentPeriod }
+          },
+          order: [[Calendar, 'date', 'ASC']]
+        }).then(course =>{
+          if (course === null) {
+            console.log('Not found!')
+            res.redirect('/cramschool/courses')
+          } else {
+            const data = course.dataValues.Calendars
+            const calendars = data.map(r => ({
+              ...r.dataValues
+            }))
+            const firstCalendarDate = calendars[0].date
+            const lastCalendarDate = calendars[calendars.length -1].date
+            return res.render('course', { 
+              course: course.dataValues, 
+              calendars: calendars,
+              currentPeriod: currentPeriod, 
+              firstCalendarDate: firstCalendarDate, 
+              lastCalendarDate: lastCalendarDate 
+            })
+          }
+        })
+      }
     })
   },
   
@@ -80,10 +96,18 @@ const schoolController = {
     Course.findByPk(req.params.id, {
       include: [{ model: Student, as: 'EnrolledStudents' }]
     }).then(course => {
-      const students = course.EnrolledStudents.map(r => ({
-        ...r.dataValues
-      }))
-      return res.render('enrolledstudents', { course: course.toJSON(), students: students })
+      if (course === null) {
+        console.log('Not found!')
+        res.redirect('/cramschool/courses')
+      } else {
+        const students = course.EnrolledStudents.map(r => ({
+          ...r.dataValues
+        }))
+        return res.render('enrolledstudents', { 
+          course: course.toJSON(), 
+          students: students 
+        })
+      }
     })
   },
 
