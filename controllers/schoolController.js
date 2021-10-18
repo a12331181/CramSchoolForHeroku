@@ -268,13 +268,18 @@ const schoolController = {
         console.log('Not found!')
         return res.redirect('/cramschool/courses')
       } else {
+        let isDiaryNotExist = true
+        if (diaries.count > 0){
+          isDiaryNotExist = false
+        }
         res.render('diaries', { 
           diaries: diaries.rows, 
           course: course,
           page: page,
           totalPage: totalPage,
           prev: prev,
-          next: next
+          next: next,
+          isDiaryNotExist: isDiaryNotExist
         })
       }
     })
@@ -292,8 +297,9 @@ const schoolController = {
       if (diary === null) {
         console.log('Not found!')
         return res.redirect('/cramschool/courses')
+      } else {
+        return res.render('diary', { diary: diary })
       }
-      return res.render('diary', { diary: diary })
     })
   },
 

@@ -27,6 +27,11 @@
       </td>
     </tr>
     {{/each}}
+    {{#if isDiaryNotExist}}
+    <tr class="table-light">
+      <th colspan="4" style="color: rgb(192, 72, 16);text-align: center;">目前暫無教師日誌</th>
+    </tr>
+    {{/if}}
   </tbody>
 </table>
 

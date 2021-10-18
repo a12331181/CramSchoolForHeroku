@@ -26,9 +26,14 @@ const schoolController = {
       } else {
         course = course.toJSON()
         let students = course.EnrolledStudents
+        let isStudentNotExist = true
+        if (students.length > 0) {
+          isStudentNotExist = false
+        }
         return res.render('studentspayment', { 
           course: course, 
-          students: students 
+          students: students,
+          isStudentNotExist: isStudentNotExist
         })
       }
     })
