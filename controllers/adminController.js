@@ -7,7 +7,7 @@ const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const fs = require('fs')
 const moment = require('moment')
-const pageLimit = 6
+const pageLimit = 12
 
 const adminController = {
   // 後臺首頁
@@ -310,9 +310,9 @@ const adminController = {
   getTeachers: (req, res) => {
     let offset = 0
     const statusList = [
-      { name: '在職', status: 1 },
-      { name: '留職停薪', status: 2 },
-      { name: '離職', status: 3 },
+      { id: 1, status: '在職' },
+      { id: 2, status: '留職停薪' },
+      { id: 3, status: '離職' },
     ]
     const whereQuery = {}
     let status = ''
@@ -395,13 +395,13 @@ const adminController = {
         res.redirect('/admin/teachers')
       } else {
         const sexList = [
-          { sex: '男' },
-          { sex: '女' },
+          { id: 1, sex: '男' },
+          { id: 2, sex: '女' },
         ]
         const statusList = [
-          { name: '在職', status: 1 },
-          { name: '留職停薪', status: 2 },
-          { name: '離職', status: 3 },
+          { id: 1, status: '在職' },
+          { id: 2, status: '留職停薪' },
+          { id: 3, status: '離職' },
         ]
         return res.render('admin/editteacher', { 
           teacher: teacher,
