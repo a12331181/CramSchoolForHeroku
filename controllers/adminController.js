@@ -7,7 +7,7 @@ const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const fs = require('fs')
 const moment = require('moment')
-const pageLimit = 12
+const pageLimit = 6
 
 const adminController = {
   // 後臺首頁
@@ -308,9 +308,66 @@ const adminController = {
   },
   // 老師相關程式碼
   getTeachers: (req, res) => {
-    return Teacher.findAll({raw: true}).then(teachers =>{
-      return res.render('admin/teachers', { teachers: teachers })
-    })
+    let offset = 0
+    const statusList = [
+      { name: '在職', status: 1 },
+      { name: '留職停薪', status: 2 },
+      { name: '離職', status: 3 },
+    ]
+    const whereQuery = {}
+    let status = ''
+    if (req.query.page) {
+      offset = (req.query.page - 1) * pageLimit
+    }
+    if (req.query.status) {
+      status = Number(req.query.status)
+      whereQuery.status = status
+      Teacher.findAndCountAll({
+        raw: true,
+        nest: true,
+        offset: offset,
+        limit: pageLimit,
+        where: whereQuery,
+        order: [['status', 'ASC']]  
+      }).then(teachers =>{
+        const page = Number(req.query.page) || 1
+        const pages = Math.ceil(teachers.count / pageLimit)
+        const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+        const prev = page - 1 < 1 ? 1 : page - 1
+        const next = page + 1 > pages ? pages : page + 1
+        return res.render('admin/teachers', { 
+          teachers: teachers.rows,
+          page: page,
+          totalPage: totalPage,
+          prev: prev,
+          next: next,
+          statusList: statusList,
+          status: whereQuery.status
+        })
+      })
+    } else {
+      Teacher.findAndCountAll({
+        raw: true,
+        nest: true,
+        offset: offset,
+        limit: pageLimit,
+        order: [['status', 'ASC']]  
+      }).then(teachers =>{
+        const page = Number(req.query.page) || 1
+        const pages = Math.ceil(teachers.count / pageLimit)
+        const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
+        const prev = page - 1 < 1 ? 1 : page - 1
+        const next = page + 1 > pages ? pages : page + 1
+        return res.render('admin/teachers', { 
+          teachers: teachers.rows,
+          page: page,
+          totalPage: totalPage,
+          prev: prev,
+          next: next,
+          statusList: statusList
+        })
+      })
+    }
   },
   getTeacher: (req, res) => {
     return Teacher.findByPk(req.params.id, {
@@ -329,12 +386,28 @@ const adminController = {
     })
   },
   editTeacher: (req, res) => {
-    return Teacher.findByPk(req.params.id, {raw:true}).then(teacher => {
-      if (teacher ===null) {
+    return Teacher.findByPk(req.params.id, {
+      raw: true,
+      nest: true
+    }).then(teacher => {
+      if (teacher === null) {
         console.log('Not found!')
         res.redirect('/admin/teachers')
       } else {
-        return res.render('admin/editteacher', { teacher: teacher } )       
+        const sexList = [
+          { sex: '男' },
+          { sex: '女' },
+        ]
+        const statusList = [
+          { name: '在職', status: 1 },
+          { name: '留職停薪', status: 2 },
+          { name: '離職', status: 3 },
+        ]
+        return res.render('admin/editteacher', { 
+          teacher: teacher,
+          sexList: sexList,
+          statusList: statusList
+        })       
       }
     })
   },
@@ -348,7 +421,8 @@ const adminController = {
           phone: req.body.phone,
           address: req.body.address,
           education: req.body.education,
-          school: req.body.school
+          school: req.body.school,
+          status: req.body.status,
         })
         .then((teacher) => {
           req.flash('success_messages', '成功修改教師資料')
@@ -359,7 +433,6 @@ const adminController = {
   // 學生相關程式碼
   getStudents: (req, res) => {
     let offset = 0
-    let isFilter = false
     const whereQuery = {}
     let courseId = ''
     if (req.query.page) {
@@ -380,7 +453,6 @@ const adminController = {
         const totalPage = Array.from({ length: pages }).map((v, index) => index + 1)
         const prev = page - 1 < 1 ? 1 : page - 1
         const next = page + 1 > pages ? pages : page + 1
-        isFilter = true
         Course.findAll({
           raw: true,
           nest: true
@@ -389,12 +461,10 @@ const adminController = {
             students: result.rows,
             courses: courses,
             courseId: whereQuery.id,
-            isFilter: isFilter,
             page: page,
             totalPage: totalPage,
             prev: prev,
             next: next,
-            isAdmin: req.user.isAdmin
           })
         })
       })
@@ -417,12 +487,10 @@ const adminController = {
           return res.render('admin/students', { 
             students: result.rows,
             courses: courses,
-            isFilter: isFilter,
             page: page,
             totalPage: totalPage,
             prev: prev,
             next: next,
-            isAdmin: req.user.isAdmin
           })
         })
       })
