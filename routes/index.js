@@ -75,6 +75,8 @@ module.exports = (app, passport) => {
   app.get('/admin/courses/create', authenticatedAdmin, adminController.getCreateCoursePage)
   app.post('/admin/courses', authenticatedAdmin, adminController.postCourse)
   app.get('/admin/courses/:id/edit', authenticatedAdmin, adminController.editCourse)
+  app.put('/admin/courses/:id/close', authenticatedAdmin, adminController.closeCourse)
+  app.put('/admin/courses/:id/open', authenticatedAdmin, adminController.openCourse)
   app.put('/admin/courses/:id', authenticatedAdmin, adminController.putCourse)
   app.delete('/admin/courses/:id', authenticatedAdmin, adminController.deleteCourse)
   //admin calendar 相關路由

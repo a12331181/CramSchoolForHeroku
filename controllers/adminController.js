@@ -18,18 +18,31 @@ const adminController = {
   getCourses : (req, res) => {
     return Course.findAll({
       raw: true,
-      nest: true
+      nest: true,
+      include: [Teacher],
+      order: [['isActive', 'DESC']]  
     }).then(courses =>{
       return res.render('admin/courses', { courses: courses })
     })
   },
   getCreateCoursePage: (req, res) => {
+    const typeList = [
+      { id: 1, type: '依堂數計費' },
+      { id: 2, type: '依月計費' },
+    ]
+    const timeList = [
+      { id: 1, time: '60' },
+      { id: 2, time: '90' },
+      { id: 3, time: '120' },
+    ]
     Teacher.findAll({
       raw: true,
       nest: true
     }).then(teachers => {
       return res.render('admin/createcourse', {
-        teachers: teachers
+        teachers: teachers,
+        timeList: timeList,
+        typeList: typeList
       })
     })
   },
@@ -61,6 +74,15 @@ const adminController = {
     })
   },
   editCourse: (req, res) => {
+    const typeList = [
+      { id: 1, type: '依堂數計費' },
+      { id: 2, type: '依月計費' },
+    ]
+    const timeList = [
+      { id: 1, time: '60' },
+      { id: 2, time: '90' },
+      { id: 3, time: '120' },
+    ]
     Teacher.findAll({
       raw: true,
       nest: true
@@ -75,7 +97,9 @@ const adminController = {
         } else {
           return res.render('admin/createcourse', { 
             course: course,
-            teachers: teachers
+            teachers: teachers,
+            typeList: typeList,
+            timeList: timeList
           })
         }
       })
@@ -107,6 +131,28 @@ const adminController = {
             res.redirect('/admin/courses')
           })
       })
+  },
+  closeCourse: (req, res) => {
+    Course.findByPk(req.params.id)
+      .then(course => {
+        course.update({
+          isActive: false
+        }).then(() => {
+          req.flash('success_messages', '已成功關閉課程')
+          return res.redirect('back')
+        })
+    })
+  },
+  openCourse: (req, res) => {
+    Course.findByPk(req.params.id)
+      .then(course => {
+        course.update({
+          isActive: true
+        }).then(() => {
+          req.flash('success_messages', '已成功開啟課程')
+          return res.redirect('back')
+        })
+    })
   },
   // 課程行事曆相關程式碼
   getCalendar : (req, res) => {

@@ -11,16 +11,26 @@
   <div class="form-group">
     <label for="time">上課時長</label>
     <select class="form-control" name="time" id="time" value="{{course.time}}">
-      <option value="90">90分鐘</option>
-      <option value="60">60分鐘</option>
+      {{#each timeList}}
+      <option value="{{this.time}}" 
+        {{#ifCond ../course.time this.time}} 
+          selected 
+        {{/ifCond}}>{{this.time}}分鐘
+      </option>
+      {{/each}}
     </select>
   </div>
 
   <div class="form-group">
     <label for="type">計費方式</label>
     <select class="form-control" name="type" id="type" value="{{course.type}}">
-      <option value="依堂數計費">依堂數計費</option>
-      <option value="依月計費">依月計費</option>
+      {{#each typeList}}
+      <option value="{{this.type}}" 
+        {{#ifCond ../course.type this.type}} 
+          selected 
+        {{/ifCond}}>{{this.type}}
+      </option>
+      {{/each}}
     </select>
   </div>
   
@@ -38,7 +48,11 @@
     <label for="teacherId">授課老師</label>
     <select class="form-control" id="teacherId" name="teacherId">
       {{#each teachers}}
-      <option value="{{this.id}}">{{this.name}}</option>
+      <option value="{{this.id}}" 
+        {{#ifCond this.id ../course.TeacherId}} 
+          selected
+        {{/ifCond}}>{{this.name}}
+      </option>
       {{/each}}
     </select>
   </div>

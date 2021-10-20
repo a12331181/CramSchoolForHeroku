@@ -29,11 +29,14 @@
       <th scope="col">計費方式</th>
       <th scope="col">堂數</th>
       <th scope="col">價格</th>
+      <th scope="col">教師</th>
+      <th scope="col">#</th>
       <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
     {{#each courses}}
+    {{#if this.isActive}}
     <tr class="table-light">
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
@@ -41,6 +44,7 @@
       <td>{{this.type}}</td>
       <td>{{this.amounts}}堂 / 期</td>
       <td>{{this.price}}</td>
+      <td>{{this.Teacher.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
           <a href="/admin/courses/{{this.id}}/calendar">
@@ -56,7 +60,43 @@
           <button type="submit" class="btn btn-link">刪除</button>
         </form>
       </td>
+      <td>
+        <form action="/admin/courses/{{this.id}}/close?_method=PUT" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-sm btn-danger">關閉課程</button>
+        </form>
+      </td>
     </tr>
+    {{else}}
+    <tr class="table-secondary">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.time}} 分鐘</td>
+      <td>{{this.type}}</td>
+      <td>{{this.amounts}}堂 / 期</td>
+      <td>{{this.price}}</td>
+      <td>{{this.Teacher.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link disabled">
+          <a href="/admin/courses/{{this.id}}/calendar">
+            顯示課程行事曆
+          </a>
+        </button>
+        <button type="button" class="btn btn-link disabled">
+          <a href="/admin/courses/{{this.id}}/edit">
+            修改
+          </a>
+        </button>
+        <form action="/admin/courses/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link disabled">刪除</button>
+        </form>
+      </td>
+      <td>
+        <form action="/admin/courses/{{this.id}}/open?_method=PUT" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-sm btn-warning">開啟課程</button>
+        </form>
+      </td>
+    </tr>
+    {{/if}}
     {{/each}}
   </tbody>
 </table>
