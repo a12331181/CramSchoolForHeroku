@@ -42,17 +42,20 @@
       <th scope="col">性別</th>
       <th scope="col">學校</th>
       <th scope="col">年級</th>
+      <th scope="col">狀態</th>
       <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
     {{#each students}}
+    {{#ifCond this.status 1}}
     <tr class="table-light">
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.sex}}</td>
       <td>{{this.school}}</td>
       <td>{{this.grade}}</td>
+      <td style="color: rgb(67, 202, 74);">在學</td>
       <td>
         <button type="button" class="btn btn-link">
           <a href="/admin/students/{{this.id}}">
@@ -74,6 +77,37 @@
         </button>
       </td>
     </tr>
+    {{/ifCond}}
+    {{#ifCond this.status 2}}
+    <tr class="table-secondary">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.sex}}</td>
+      <td>{{this.school}}</td>
+      <td>{{this.grade}}</td>
+      <td style="color: rgb(226, 35, 35);">離開</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/students/{{this.id}}">
+            瀏覽學生資料
+          </a>
+        </button>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/students/{{this.id}}/edit">
+            修改
+          </a>
+        </button>
+        <form action="/admin/students/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">刪除</button>
+        </form>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/students/{{this.id}}/enrolls">
+            選課表單
+          </a>
+        </button>
+      </td>
+    </tr>
+    {{/ifCond}}
     {{/each}}
   </tbody>
 </table>

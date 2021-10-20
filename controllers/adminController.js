@@ -446,7 +446,8 @@ const adminController = {
         nest: true,
         include: [{ model: Course, as: 'EnrolledCourses', where: whereQuery }],
         limit: pageLimit,
-        offset: offset
+        offset: offset,
+        order: [['status', 'ASC']]  
       }).then(result => {
         const page = Number(req.query.page) || 1
         const pages = Math.ceil(result.count / pageLimit)
@@ -473,7 +474,8 @@ const adminController = {
         raw: true,
         nest: true,
         limit: pageLimit,
-        offset: offset
+        offset: offset,
+        order: [['status', 'ASC']]  
       }).then(result => {
         const page = Number(req.query.page) || 1
         const pages = Math.ceil(result.count / pageLimit)
@@ -497,7 +499,31 @@ const adminController = {
     }
   },
   getCreateStudentPage: (req, res) => {
-    return res.render('admin/createstudent')
+    const sexList = [
+      { id: 1, sex: '男' },
+      { id: 2, sex: '女' },
+    ]
+    const statusList = [
+      { id: 1, status: '在學' },
+      { id: 2, status: '離開' }
+    ]
+    const gradeList = [
+      { id: 1, grade: '一年級' },
+      { id: 2, grade: '二年級' },
+      { id: 3, grade: '三年級' },
+      { id: 4, grade: '四年級' },
+      { id: 5, grade: '五年級' },
+      { id: 6, grade: '六年級' },
+      { id: 7, grade: '七年級' },
+      { id: 8, grade: '八年級' },
+      { id: 9, grade: '九年級' },
+      { id: 10, grade: '其他' },
+    ]
+    return res.render('admin/createstudent', {
+      sexList: sexList,
+      statusList: statusList,
+      gradeList: gradeList
+    })
   },
   postStudent: (req, res) => {
     file = req.file
@@ -513,7 +539,8 @@ const adminController = {
             grade: req.body.grade,
             tel: req.body.tel,
             address: req.body.address,
-            image: file ? `/upload/${file.originalname}` : null
+            image: file ? `/upload/${file.originalname}` : null,
+            status: req.body.status,
           }).then((student) => {
             req.flash('success_messages', '成功建立學生資料')
             return res.redirect('/admin/students')
@@ -529,7 +556,8 @@ const adminController = {
         grade: req.body.grade,
         tel: req.body.tel,
         address: req.body.address,
-        image: null
+        image: null,
+        status: req.body.status,
       }).then((student) => {
         req.flash('success_messages', '成功建立學生資料')
         return res.redirect('/admin/students')
@@ -552,6 +580,26 @@ const adminController = {
     })
   },
   editStudent: (req, res) => {
+    const sexList = [
+      { id: 1, sex: '男' },
+      { id: 2, sex: '女' },
+    ]
+    const statusList = [
+      { id: 1, status: '在學' },
+      { id: 2, status: '離開' }
+    ]
+    const gradeList = [
+      { id: 1, grade: '一年級' },
+      { id: 2, grade: '二年級' },
+      { id: 3, grade: '三年級' },
+      { id: 4, grade: '四年級' },
+      { id: 5, grade: '五年級' },
+      { id: 6, grade: '六年級' },
+      { id: 7, grade: '七年級' },
+      { id: 8, grade: '八年級' },
+      { id: 9, grade: '九年級' },
+      { id: 10, grade: '其他' },
+    ]
     Student.findByPk(req.params.id, {
       raw: true,
       nest: true
@@ -560,7 +608,12 @@ const adminController = {
         console.log('Not found!')
         res.redirect('/admin/students')
       } else {
-        return res.render('admin/createstudent', { student: student } )        
+        return res.render('admin/createstudent', { 
+          student: student,
+          statusList: statusList,
+          sexList: sexList,
+          gradeList: gradeList
+        })        
       }
     })
   },
@@ -580,7 +633,8 @@ const adminController = {
                 grade: req.body.grade,
                 tel: req.body.tel,
                 address: req.body.address,
-                image: file ? `/upload/${file.originalname}` : student.image
+                image: file ? `/upload/${file.originalname}` : student.image,
+                status: req.body.status,
               }).then((student) => {
                 req.flash('success_messages', '成功更新學生資料')
                 return res.redirect('/admin/students')
@@ -599,7 +653,8 @@ const adminController = {
             grade: req.body.grade,
             tel: req.body.tel,
             address: req.body.address,
-            image: student.image
+            image: student.image,
+            status: req.body.status,
           }).then((student) => {
             req.flash('success_messages', '成功更新學生資料')
             return res.redirect('/admin/students')

@@ -11,9 +11,14 @@
   
   <div class="form-group">
     <label for="sex">性別</label>
-    <select class="form-control" name="sex" id="sex" value="{{student.sex}}">
-      <option value="男">男</option>
-      <option value="女">女</option>
+    <select class="form-control" name="sex" id="sex">
+      {{#each sexList}}
+      <option value="{{this.sex}}" 
+        {{#ifCond ../student.sex this.sex}} 
+          selected 
+        {{/ifCond}}>{{this.sex}}
+      </option>
+      {{/each}}
     </select>
   </div>
   
@@ -32,16 +37,13 @@
   <div class="form-group">
     <label for="grade">年級</label>
     <select class="form-control" name="grade" id="grade">
-      <option value="一年級">一年級</option>
-      <option value="二年級">二年級</option>
-      <option value="三年級">三年級</option>
-      <option value="四年級">四年級</option>
-      <option value="五年級">五年級</option>
-      <option value="六年級">六年級</option>
-      <option value="國中一年級">國中一年級</option>
-      <option value="國中二年級">國中二年級</option>
-      <option value="國中三年級">國中三年級</option>
-      <option value="其他">其他</option>
+      {{#each gradeList}}
+      <option value="{{this.grade}}" 
+        {{#ifCond ../student.grade this.grade}} 
+          selected 
+        {{/ifCond}}>{{this.grade}}
+      </option>
+      {{/each}}
     </select>
   </div>
   
@@ -59,6 +61,19 @@
   <div class="form-group">
     <label for="image">照片</label>
     <input type="file" class="form-control-file" id="image" name="image">
+  </div>
+  
+  <div class="form-group">
+    <label for="status">狀態</label>
+    <select class="form-control" name="status" id="status">
+      {{#each statusList}}
+      <option value="{{this.id}}" 
+        {{#ifCond ../student.status this.id}} 
+          selected 
+        {{/ifCond}}>{{this.status}}
+      </option>
+      {{/each}}
+    </select>
   </div>
 
   <button type="submit" class="btn btn-primary">送出資料</button>
