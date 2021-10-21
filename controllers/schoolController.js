@@ -40,7 +40,8 @@ const schoolController = {
         nest: true, 
         include: [ 
           { model: Teacher }
-        ]
+        ],
+        where: { isActive : true }
       }),
       User.findByPk(req.user.id, {
         raw: true,
@@ -62,7 +63,8 @@ const schoolController = {
         console.log('Not found!')
         res.redirect('/cramschool/courses')
       } else {
-        Course.findByPk(req.params.id, {
+        Course.findOne({
+          where: { id: req.params.id, isActive: true },
           include: {
             model: Calendar,
             where: { period: currentPeriod }
@@ -93,7 +95,8 @@ const schoolController = {
   },
   
   getCourseEnrolledStudents: (req, res) => {
-    Course.findByPk(req.params.id, {
+    Course.findOne({
+      where: { id: req.params.id, isActive: true },
       include: [{ model: Student, as: 'EnrolledStudents' }]
     }).then(course => {
       if (course === null) {
@@ -254,9 +257,10 @@ const schoolController = {
         limit: pageLimit,
         order: [['createdAt', 'DESC']]      
       }),
-      Course.findByPk(req.params.id, {
+      Course.findOne({
         raw: true,
-        nest: true
+        nest: true,
+        where: { id: req.params.id, isActive: true },
       })
     ]).then(([diaries, course]) => {
       const page = Number(req.query.page) || 1
@@ -305,10 +309,11 @@ const schoolController = {
 
   getCreateDiaryPage: (req, res) => {
     Promise.all([
-      Course.findByPk(req.params.id, {
+      Course.findOne({
         raw: true,
         nest: true,
-        include: [Teacher]
+        include: [Teacher],
+        where: { id: req.params.id, isActive: true },
       }),
       User.findByPk(req.user.id, {
         raw: true,
