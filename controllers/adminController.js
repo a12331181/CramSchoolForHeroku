@@ -83,26 +83,27 @@ const adminController = {
       { id: 2, time: '90' },
       { id: 3, time: '120' },
     ]
-    Teacher.findAll({
-      raw: true,
-      nest: true
-    }).then(teachers => {
-      return Course.findByPk(req.params.id, {
+    Promise.all([
+      Teacher.findAll({
         raw: true,
         nest: true
-      }).then(course => {
-        if (course === null) {
-          console.log('Not found!')
-          res.redirect('/admin/courses')
-        } else {
-          return res.render('admin/createcourse', { 
-            course: course,
-            teachers: teachers,
-            typeList: typeList,
-            timeList: timeList
-          })
-        }
-      })
+      }),
+      Course.findByPk(req.params.id)
+    ]).then(([teachers, course]) => {
+      if (course === null) {
+        console.log('Not found!')
+        res.redirect('/admin/courses')
+      } else if (course.dataValues.isActive === false) {
+        console.log('Not open!')
+        res.redirect('/admin/courses')
+      } else {
+        return res.render('admin/createcourse', { 
+          course: course.toJSON(),
+          teachers: teachers,
+          typeList: typeList,
+          timeList: timeList
+        })
+      }
     })
   },
   putCourse: (req, res) => {
@@ -123,14 +124,21 @@ const adminController = {
       })
   },
   deleteCourse: (req, res) => {
-    return Course.findByPk(req.params.id)
-      .then((course) => {
-        course.destroy()
-          .then((course) => {
+    Course.findByPk(req.params.id, {
+      include: { model: Calendar, where: { isActive: false }}
+    }).then((course) => {
+      if (course === null) {
+        Course.findByPk(req.params.id).then(needDeleteCourse => {
+          needDeleteCourse.destroy().then(() => {
             req.flash('success_messages', '已成功刪除課程')
             res.redirect('/admin/courses')
           })
-      })
+        })
+      } else {
+        req.flash('error_messages', '課程已在進行，故無法刪除')
+        res.redirect('/admin/courses')
+      }
+    })
   },
   closeCourse: (req, res) => {
     Course.findByPk(req.params.id)
@@ -166,10 +174,7 @@ const adminController = {
           CourseId: req.params.id
         }
       }),
-      Course.findByPk(req.params.id, {
-        raw: true,
-        nest: true
-      }),
+      Course.findByPk(req.params.id),
       Calendar.findAndCountAll({
         where: {
           CourseId: req.params.id
@@ -180,6 +185,9 @@ const adminController = {
     ]).then(([calendarPeriod, course, result]) =>{
       if (course === null) {
         console.log('Not found')
+        res.redirect('/admin/courses')
+      } else if (course.dataValues.isActive === false) {
+        console.log('Not open!')
         res.redirect('/admin/courses')
       } else {
         let isPeriodNotEqualOne = true
@@ -195,7 +203,7 @@ const adminController = {
           ...r.dataValues
         }))
         return res.render('admin/course', { 
-          course: course, 
+          course: course.toJSON(), 
           calendars: calendars, 
           isPeriodNotEqualOne: isPeriodNotEqualOne,
           page: page,
