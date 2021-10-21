@@ -5,6 +5,7 @@ const Teacher = db.Teacher
 const Student = db.Student
 const Enrollment = db.Enrollment
 const Calendar = db.Calendar
+const Attend = db.Attend
 const fs = require('fs')
 const moment = require('moment')
 const pageLimit = 12
@@ -734,14 +735,25 @@ const adminController = {
     }
   },
   deleteStudent: (req, res) => {
-    return Student.findByPk(req.params.id)
-      .then((student) => {
-        student.destroy()
+    Attend.findAll({
+      where: { StudentId: req.params.id }
+    }).then(attends => {
+      if (attends.length === 0) {
+        Student.findByPk(req.params.id)
           .then((student) => {
-            req.flash('success_messages', '成功刪除學生資料')
-            res.redirect('/admin/students')
+            student.destroy()
+            .then(() => {
+              console.log('No data!')
+              req.flash('success_messages', '成功刪除學生資料')
+              res.redirect('/admin/students')
+            })
           })
-      })
+      } else {
+        console.log('Have attend data!')
+        req.flash('error_messages', '已有出席紀錄，故無法刪除此學生資料')
+        res.redirect('/admin/students')
+      }
+    })
   },
   enrollCoursePage: (req, res) => {
     Student.findByPk(req.params.id, {
@@ -752,8 +764,12 @@ const adminController = {
       if (student === null) {
         console.log('Not found!')
         res.redirect('/admin/students')
+      } else if (Number(student.dataValues.status) === 2) {
+        console.log('Not open!')
+        res.redirect('/admin/students')
       } else {
         Course.findAll({ 
+          where: { isActive: true },
           include: [ 
             { model: Student, as: 'EnrolledStudents' }
           ]
