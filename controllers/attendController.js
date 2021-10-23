@@ -14,8 +14,7 @@ const attendController = {
       include: [Teacher]
     }).then(user =>{
       Course.findAll({
-        raw: true,
-        nest: true, 
+        where: { isActive: true },
         include: {
           model: Teacher,
           where: { id: user.Teacher.id }
@@ -38,9 +37,8 @@ const attendController = {
           UserId: req.user.id
         },
       }),
-      Course.findByPk(req.params.id, {
-        raw: true,
-        nest: true,
+      Course.findOne({
+        where: { id: req.params.id, isActive: true },
         include: [Teacher]
       })
     ]).then(([teacher, course]) => {
@@ -48,7 +46,7 @@ const attendController = {
         console.log('Not found!')
         res.redirect('/cramschool/attend')
       } else {
-        if (teacher.id !== course.Teacher.id ) {
+        if (teacher.id !== course.toJSON().Teacher.id ) {
           console.log('Not match!')
           res.redirect('/cramschool/attend')
         } else {
@@ -80,11 +78,13 @@ const attendController = {
   },
 
   getAttend:(req, res) => {
-    return Promise.all([
-      Calendar.findByPk(req.params.calendarId, {
+    Promise.all([
+      Calendar.findOne({
+        where: { id: req.params.calendarId, isActive: true },
         include: [Attend]
       }),
-      Course.findByPk(req.params.courseId, {
+      Course.findOne({
+        where: { id: req.params.courseId, isActive: true },
         include: [{ model: Student, as: 'EnrolledStudents' }]
       })
     ]).then(([calendar, course]) => {
@@ -93,17 +93,16 @@ const attendController = {
         console.log('Not found!')
         res.redirect(url)
       } else {
-        if (calendar.isActive === false) {
-          console.log('Not open!')
-          res.redirect(url)
-        } else {
-          const data = course.EnrolledStudents
-          const students = data.map(r => ({
-            ...r.dataValues,
-            isChecked: calendar.Attends.map(d => d.StudentId).includes(r.id)
-          }))
-          return res.render('attend', { calendar: calendar.toJSON(), students: students, course: course.toJSON() })
-        }
+        const data = course.EnrolledStudents
+        const students = data.map(r => ({
+          ...r.dataValues,
+          isChecked: calendar.Attends.map(d => d.StudentId).includes(r.id)
+        }))
+        return res.render('attend', { 
+          calendar: calendar.toJSON(),
+          students: students,
+          course: course.toJSON() 
+        })
       }
     })
   },

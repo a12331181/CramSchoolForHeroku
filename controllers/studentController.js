@@ -34,7 +34,6 @@ const studentController = {
         Course.findAll({
           where: { isActive: true }
         }).then(courses => {
-          console.log(courses)
           return res.render('students', { 
             students: result.rows,
             courses: courses,
