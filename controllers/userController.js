@@ -59,7 +59,7 @@ const userController = {
     Promise.all([
       Teacher.findOne({
         include: { model: Course },
-        where: { UserId: req.params.id }
+        where: { UserId: req.params.id, status: 1 }
       }),
       Teacher.findOne({
         raw: true,

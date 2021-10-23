@@ -4,8 +4,9 @@ const User = db.User
 
 const teacherController = {
   getTeachers: (req, res) => {
-    return Teacher.findAll({
-      include: [User]
+    Teacher.findAll({
+      include: [User],
+      where: { status: 1 }
     }).then(teachers => {
       const data = teachers.map(r => ({
         ...r.dataValues

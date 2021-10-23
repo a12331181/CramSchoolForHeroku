@@ -20,6 +20,7 @@ const studentController = {
       Student.findAndCountAll({
         raw: true,
         nest: true,
+        where: { status: 1 },
         include: [{ model: Course, as: 'EnrolledCourses', where: whereQuery }],
         limit: pageLimit,
         offset: offset
@@ -31,9 +32,9 @@ const studentController = {
         const next = page + 1 > pages ? pages : page + 1
         isFilter = true
         Course.findAll({
-          raw: true,
-          nest: true
+          where: { isActive: true }
         }).then(courses => {
+          console.log(courses)
           return res.render('students', { 
             students: result.rows,
             courses: courses,
@@ -51,6 +52,7 @@ const studentController = {
       Student.findAndCountAll({
         raw: true,
         nest: true,
+        where: { status: 1 },
         limit: pageLimit,
         offset: offset
       }).then(result => {
@@ -60,8 +62,7 @@ const studentController = {
         const prev = page - 1 < 1 ? 1 : page - 1
         const next = page + 1 > pages ? pages : page + 1
         Course.findAll({
-          raw: true,
-          nest: true
+          where: { isActive: true }
         }).then(courses => {
           return res.render('students', { 
             students: result.rows,
@@ -79,8 +80,9 @@ const studentController = {
   },
 
   getStudent: (req, res) => {
-    Student.findByPk(req.params.id,{
-      include: [{ model: Course, as: 'EnrolledCourses' }]
+    Student.findOne({
+      include: [{ model: Course, as: 'EnrolledCourses' }],
+      where: { id: req.params.id, status: 1 }
     }).then(student => {
       if (student === null) {
         console.log('Not found')
@@ -101,7 +103,7 @@ const studentController = {
       }
     }).then(currentPeriod => {
       if (isNaN(currentPeriod)) {
-        console.log('Not found')
+        console.log('Not found!')
         res.redirect('/cramschool/students')
       } else {
         Promise.all([
@@ -109,17 +111,15 @@ const studentController = {
             where: { CourseId: req.params.courseId, period: currentPeriod },
             include: { model: Attend, where: { StudentId: req.params.studentId }},
           }),
-          Course.findByPk(req.params.courseId, {
-            raw: true,
-            nest: true
+          Course.findOne({
+            where: { id: req.params.courseId, isActive: true }
           }),
-          Student.findByPk(req.params.studentId, {
-            raw: true,
-            nest: true
+          Student.findOne({
+            where: { id: req.params.studentId, status: 1 }
           })
         ]).then(([calendars, course, student]) => {
           if (course === null || student === null) {
-            console.log('Not found')
+            console.log('Not found!')
             res.redirect('/cramschool/students')
           } else {
             const data = calendars.rows.map(r => ({
@@ -127,8 +127,8 @@ const studentController = {
               ...r.dataValues.Attends['0'].dataValues
             }))
             return res.render('studentattend', { 
-              student: student, 
-              course: course, 
+              student: student.toJSON(), 
+              course: course.toJSON(), 
               attends: data,
               currentPeriod: currentPeriod,
               totalCalendarNums: course.amounts,

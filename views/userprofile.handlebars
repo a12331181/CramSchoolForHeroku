@@ -42,13 +42,15 @@
 
 <div class="row">
 {{#each courses}}
+{{#if this.isActive}}
 <div class="card col-md-3">
   <div class="card-body">
     <h5 class="card-title">{{this.name}}</h5>
     <a href="/cramschool/courses/{{this.id}}/calendar" class="card-link">課程行事曆</a>
-    <a href="/cramschool/courses/{{this.id}}/enrolledstudents" class="card-link">學生上課名冊</a>
+    <a href="/cramschool/courses/{{this.id}}/enrolledstudents" class="card-link">學生名單</a>
   </div>
 </div>
+{{/if}}
 {{/each}}
 </div>
 
