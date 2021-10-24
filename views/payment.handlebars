@@ -34,10 +34,10 @@
   <tbody>
     {{#each courses}}
     <tr class="table-light">
-      <th scope="row">{{this.id}}</th>
-      <td>{{this.name}}</td>
+      <th scope="row">{{this.dataValues.id}}</th>
+      <td>{{this.dataValues.name}}</td>
       <td>
-        <a href="/cramschool/payment/courses/{{this.id}}" class="btn btn-sm btn-dark">
+        <a href="/cramschool/payment/courses/{{this.dataValues.id}}" class="btn btn-sm btn-dark">
           學生名單
         </a>
       </td>

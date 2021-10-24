@@ -8,16 +8,16 @@ const moment = require('moment')
 
 const schoolController = {
   getPaymentIndexPage: (req, res) => {
-    return Course.findAll({ 
-      raw: true,
-      nest: true
+    Course.findAll({ 
+      where: { isActive: true }
     }).then(courses =>{
       return res.render('payment', { courses: courses })
     })
   },
 
   getEnrolledStudents: (req, res) => {
-    return Course.findByPk(req.params.id,{
+    Course.findOne({
+      where: { id: req.params.id, isActive: true },
       include: [{ model: Student, as: 'EnrolledStudents' }]
     }).then(course => {
       if (course === null) {
@@ -40,33 +40,36 @@ const schoolController = {
   },
 
   getPayments: (req, res) => {
-    return Promise.all([
+    Promise.all([
       Enrollment.findByPk(req.params.enrollmentId,{
         include: [Payment]
       }),
-      Course.findByPk(req.params.courseId,{
-        raw: true,
-        nest: true
+      Course.findOne({
+        where: { id: req.params.courseId, isActive: true },
       })
     ]).then(([enrollment, course]) => {
       if (enrollment === null || course === null) {
-        console.log('Not found')
+        console.log('Not found!')
         res.redirect('/cramschool/payment')
       } else {
-        Student.findByPk(enrollment.StudentId,{
-          raw: true,
-          nest: true
+        Student.findOne({
+          where: { id: enrollment.StudentId, status: 1 },
         }).then(student => {
-          let isPaymentNotExist = true
-          if (enrollment.dataValues.Payments.length > 0){
-            isPaymentNotExist = false
+          if (student === null) {
+            console.log('Not found!')
+            res.redirect('/cramschool/payment')
+          } else {
+            let isPaymentNotExist = true
+            if (enrollment.dataValues.Payments.length > 0){
+              isPaymentNotExist = false
+            }
+            return res.render('paymentlist', { 
+              enrollment: enrollment.toJSON(), 
+              course: course.toJSON(), 
+              student: student.toJSON(),
+              isPaymentNotExist : isPaymentNotExist
+            })
           }
-          return res.render('paymentlist', { 
-            enrollment: enrollment.toJSON(), 
-            course: course, 
-            student: student,
-            isPaymentNotExist : isPaymentNotExist
-          })
         })
       }
     })
@@ -79,9 +82,8 @@ const schoolController = {
         nest: true,
         include: [Payment]
       }),
-      Course.findByPk(req.params.courseId,{
-        raw: true,
-        nest: true
+      Course.findOne({
+        where: { id: req.params.courseId, isActive: true }
       })
     ]).then(([enrollment, course]) => {
       if (enrollment === null || course === null) {
@@ -90,7 +92,7 @@ const schoolController = {
       } else {
         return res.render('createpayment', { 
           enrollment: enrollment, 
-          course: course 
+          course: course.toJSON() 
         })        
       }
     })
