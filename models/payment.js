@@ -5,14 +5,14 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Payment extends Model {
     static associate(models) {
-      Payment.belongsTo(models.Enrollment)
+      Payment.belongsTo(models.Tuition)
     }
   };
   Payment.init({
     time: DataTypes.STRING,
     amount: DataTypes.INTEGER,
     isPaid: DataTypes.BOOLEAN,
-    EnrollmentId: DataTypes.INTEGER,
+    TuitionId: DataTypes.INTEGER,
     currentPeriod: DataTypes.INTEGER,
   }, {
     sequelize,

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       Tuition.belongsTo(models.Course)
       Tuition.belongsTo(models.Student)
+      Tuition.hasOne(models.Payment)
     }
   };
   Tuition.init({
