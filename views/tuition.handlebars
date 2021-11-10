@@ -10,22 +10,36 @@
       <th scope="col">#</th>
       <th scope="col">期數</th>
       <th scope="col">開立日期</th>
+      <th scope="col">狀態</th>
       <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
     {{#each tuitions}}
+    {{#ifCond this.Payment.id null}}
     <tr class="table-light">
       <th scope="row">{{this.id}}</th>
       <td>{{this.period}}</td>
       <td>{{#currentTime this.createdAt}}{{/currentTime}}</td>
+      <td style="color: rgb(204, 61, 57);">尚未遞交 ×</td>
       <td>
-        <a href="/cramschool/tuition/{{this.id}}/edit" class="btn btn-sm btn-dark my-1">修改學費表費用</a>
+        <a href="/cramschool/tuition/{{this.id}}/edit" class="btn btn-sm btn-dark my-1">確認學費表費用</a>
         <form action="/cramschool/tuition/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-sm btn-danger">刪除</button>
         </form>
       </td>
     </tr>
+    {{else}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.period}}</td>
+      <td>{{#currentTime this.createdAt}}{{/currentTime}}</td>
+      <td style="color: rgb(57, 167, 94);">已遞交 √</td>
+      <td>
+        <a href="/cramschool/tuition/{{this.id}}" class="btn btn-sm btn-link">費用明細</a>
+      </td>
+    </tr>
+    {{/ifCond}}
     {{/each}}
     {{#if tuitionNotExist}}
     <tr class="table-light">

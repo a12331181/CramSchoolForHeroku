@@ -14,6 +14,7 @@ const tuitionController = {
       Tuition.findAll({
         raw: true,
         nest: true,
+        include: [Payment],
         where: { StudentId: req.params.studentId, CourseId: req.params.courseId },
       }),
       Course.findByPk(req.params.courseId, {
@@ -224,9 +225,41 @@ const tuitionController = {
           })
         ]).then(()=> {
           let url = '/cramschool/tuition/courses/'+ String(tuition.dataValues.CourseId) + '/students/' + String(tuition.dataValues.StudentId)
-          req.flash('success_messages', '成功新增費用紀錄')
+          req.flash('success_messages', '成功新增學費表與費用紀錄')
           return res.redirect(url)
         })
+      })
+    })
+  },
+  
+  getTuition: (req, res) => {
+    Promise.all([
+      Tuition.findByPk(req.params.id, {
+        include: [{ model: ExtraFee, as: 'RequiredFee'}]
+      }),
+      Tuition.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Course]
+      }),
+      Tuition.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Student]
+      }),
+      Tuition.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Payment]
+      })
+    ]).then(([tuition, tuitionCourse, tuitionStudent, tuitionPayment]) => {
+      if (tuitionPayment.Payment.id === null) {
+        return res.redirect('/cramschool/payment')
+      }
+      return res.render('tuitiondetail', {
+        tuition: tuition,
+        tuitionCourse: tuitionCourse,
+        tuitionStudent: tuitionStudent
       })
     })
   },

@@ -31,9 +31,11 @@
       <td style="color: rgb(70, 175, 49);">
         {{currentTime this.Payment.updatedAt}}
       </td>
-      <td>#</td>
+      <td>
+        <a href="/cramschool/tuition/{{this.id}}" class="btn btn-sm btn-link">費用明細</a>
+      </td>
       {{else}}
-      <td style="color: rgb(199, 24, 24);">未繳費</td>
+      <td style="color: rgb(199, 24, 24);">未繳費 ×</td>
       <td style="color: rgb(56, 55, 55);">暫無繳款日期</td>
       <td>
         <form action="/cramschool/payment/{{this.Payment.id}}/paid?_method=PUT" method="POST" style="display: inline;">
