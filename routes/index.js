@@ -66,10 +66,7 @@ module.exports = (app, passport) => {
   //繳費紀錄相關路由
   app.get('/cramschool/payment', authenticatedAdmin, paymentController.getPaymentIndexPage)
   app.get('/cramschool/payment/courses/:id', authenticatedAdmin, paymentController.getEnrolledStudents)
-  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId', authenticatedAdmin, paymentController.getPayments)
-  app.get('/cramschool/payment/courses/:courseId/enrollment/:enrollmentId/create', authenticatedAdmin, paymentController.getCreatePaymentPage)
-  app.post('/cramschool/payment/courses/:id/bulkcreate', authenticatedAdmin, paymentController.createPayments)
-  app.post('/cramschool/payment/courses/:id/create', authenticatedAdmin, paymentController.createPayment)
+  app.get('/cramschool/payment/courses/:courseId/students/:studentId', authenticatedAdmin, paymentController.getPayments)
   app.put('/cramschool/payment/:id/paid', authenticatedAdmin, paymentController.paymentPaid)
   app.delete('/cramschool/payment/:id', authenticatedAdmin, paymentController.deletePayment)
   //後台相關路由

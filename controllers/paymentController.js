@@ -4,6 +4,7 @@ const Student = db.Student
 const Enrollment = db.Enrollment
 const Payment = db.Payment
 const Calendar = db.Calendar
+const Tuition = db.Tuition
 const moment = require('moment')
 
 const schoolController = {
@@ -41,144 +42,41 @@ const schoolController = {
 
   getPayments: (req, res) => {
     Promise.all([
-      Enrollment.findByPk(req.params.enrollmentId,{
-        include: [Payment]
+      Tuition.findAll({
+        raw: true,
+        nest: true,
+        where: { 
+          StudentId: req.params.studentId, 
+          CourseId: req.params.courseId 
+        },
+        include: { model: Payment }
       }),
       Course.findOne({
-        where: { id: req.params.courseId, isActive: true },
+        where: { isActive: true },
       })
-    ]).then(([enrollment, course]) => {
-      if (enrollment === null || course === null) {
+    ]).then(([tuition, course]) => {
+      if (course === null) {
         console.log('Not found!')
         res.redirect('/cramschool/payment')
       } else {
         Student.findOne({
-          where: { id: enrollment.StudentId, status: 1 },
+          where: { 
+            id: req.params.studentId, 
+            status: 1 
+          },
         }).then(student => {
           if (student === null) {
             console.log('Not found!')
             res.redirect('/cramschool/payment')
           } else {
-            let isPaymentNotExist = true
-            if (enrollment.dataValues.Payments.length > 0){
-              isPaymentNotExist = false
-            }
             return res.render('paymentlist', { 
-              enrollment: enrollment.toJSON(), 
+              tuition: tuition, 
               course: course.toJSON(), 
-              student: student.toJSON(),
-              isPaymentNotExist : isPaymentNotExist
+              student: student.toJSON()
             })
           }
         })
       }
-    })
-  },
-
-  getCreatePaymentPage: (req, res) => {
-    return Promise.all([
-      Enrollment.findByPk(req.params.enrollmentId,{
-        raw: true,
-        nest: true,
-        include: [Payment]
-      }),
-      Course.findOne({
-        where: { id: req.params.courseId, isActive: true }
-      })
-    ]).then(([enrollment, course]) => {
-      if (enrollment === null || course === null) {
-        console.log('Not found')
-        res.redirect('/cramschool/payment')
-      } else {
-        return res.render('createpayment', { 
-          enrollment: enrollment, 
-          course: course.toJSON() 
-        })        
-      }
-    })
-  },
-
-  createPayment: (req, res) => {
-    Promise.all([
-      Calendar.max('period', {
-        where: {
-          CourseId: req.params.id
-        }
-      }),
-      Payment.max('currentPeriod', {
-        where: {
-          EnrollmentId: req.body.EnrollmentId
-        }
-      })
-    ]).then(([calendarPeriod, currentPeriod]) => {
-      let url = '/cramschool/payment/courses/'+ String(req.params.id) + '/enrollment/' + String(req.body.EnrollmentId)
-      currentPeriod = isNaN(currentPeriod) ? 0 : currentPeriod
-      if (currentPeriod < calendarPeriod) {
-        Payment.create({
-          time: req.body.time,
-          amount: req.body.amount,
-          isPaid: false,
-          EnrollmentId: req.body.EnrollmentId,
-          currentPeriod: calendarPeriod
-        }).then(() => {
-          req.flash('success_messages', '已成功建立收費紀錄')
-          return res.redirect(url)
-        })
-      } else {
-        req.flash('error_messages', '無法重複建立收費紀錄')
-        return res.redirect(url)
-      }
-    })
-  },
-  
-  createPayments: (req, res) => {
-    Promise.all([
-      Calendar.max('period', {
-        where: {
-          CourseId: req.params.id
-        }
-      }),
-      Course.findByPk(req.params.id, {
-        include: [{ model: Student, as: 'EnrolledStudents' }]
-      })
-    ]).then(([calendarPeriod, course]) => {
-      let nums = 0
-      let url = '/cramschool/payment/courses/'+ String(course.id)
-      enrolledStudents = course.dataValues.EnrolledStudents
-      course = course.toJSON()
-      const data = enrolledStudents.map(r => ({
-        ...r.dataValues.Enrollment.dataValues
-      }))
-      async function paymentLoopCreate (course, data) {
-        for (let i = 0; i < data.length; i++ ) {
-          await Payment.max('currentPeriod', {
-            where: {
-              EnrollmentId: data[i].id
-            }
-          }).then(currentPeriod => {
-            currentPeriod = isNaN(currentPeriod) ? 0 : currentPeriod
-            if (currentPeriod < calendarPeriod) {
-              Payment.create({
-                time: moment().format('YYYY-MM-DD'),
-                amount: course.price,
-                isPaid: false,
-                EnrollmentId: data[i].id,
-                currentPeriod: calendarPeriod
-              })
-              nums += 1
-            }
-          })
-        }
-      }
-      return paymentLoopCreate (course, data).then(()=> {
-        if (nums > 0) {
-          req.flash('success_messages', '已成功建立收費紀錄')
-          res.redirect(url)
-        } else {
-          req.flash('error_messages', '目前皆是最新收費紀錄，故新增失敗')
-          res.redirect(url)
-        }
-      })
     })
   },
 
