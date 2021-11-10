@@ -3,9 +3,7 @@ const Course = db.Course
 const Student = db.Student
 const Enrollment = db.Enrollment
 const Payment = db.Payment
-const Calendar = db.Calendar
 const Tuition = db.Tuition
-const moment = require('moment')
 
 const schoolController = {
   getPaymentIndexPage: (req, res) => {
@@ -52,7 +50,7 @@ const schoolController = {
         include: { model: Payment }
       }),
       Course.findOne({
-        where: { isActive: true },
+        where: { id: req.params.courseId, isActive: true },
       })
     ]).then(([tuition, course]) => {
       if (course === null) {

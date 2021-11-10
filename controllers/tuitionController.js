@@ -5,6 +5,8 @@ const Student = db.Student
 const FeeList = db.FeeList
 const Calendar = db.Calendar
 const ExtraFee = db.ExtraFee
+const Payment = db.Payment
+const moment = require('moment')
 
 const tuitionController = {
   getCourseTuitionList: (req, res) => {
@@ -73,7 +75,7 @@ const tuitionController = {
       })
     })
   },
-  
+
   createTuitions: (req, res) => {
     Promise.all([
       Calendar.max('period', {
@@ -188,6 +190,44 @@ const tuitionController = {
     }).then(() => {
       req.flash('success_messages', '成功刪除額外費用')
       return res.redirect('back')
+    })
+  },
+
+  confirmTuitionAndCreatePayment: (req, res) => {
+    FeeList.findAll({
+      where: { 
+        TuitionId: req.params.id
+      }
+    }).then(feelists => {
+      for (let i = 0; i < feelists.length; i++ ) {
+        ExtraFee.findByPk(feelists[i].dataValues.ExtraFeeId, {
+          raw: true,
+          nest: true
+        }).then(extrafee => {
+          feelists[i].update({
+            price: extrafee.price
+          })
+        })
+      }
+    }).then(() => {
+      Tuition.findByPk(req.params.id, {include: [Course]}).then(tuition => {
+        Promise.all([
+          tuition.update({
+            course_price: tuition.dataValues.Course.dataValues.price
+          }),
+          Payment.create({
+            time: moment().format('YYYY-MM-DD'),
+            amount: tuition.dataValues.amounts, 
+            isPaid: false,
+            TuitionId: tuition.id,
+            currentPeriod: tuition.dataValues.period
+          })
+        ]).then(()=> {
+          let url = '/cramschool/tuition/courses/'+ String(tuition.dataValues.CourseId) + '/students/' + String(tuition.dataValues.StudentId)
+          req.flash('success_messages', '成功新增費用紀錄')
+          return res.redirect(url)
+        })
+      })
     })
   }
 }

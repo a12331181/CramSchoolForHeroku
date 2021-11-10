@@ -77,4 +77,10 @@
 
 <br />
 <br />
-<a href="/cramschool/tuition/courses/{{tuition.Course.id}}/students/{{tuitionStudent.Student.id}}">回上一頁</a>
+
+<div class="row">
+  <form action="/cramschool/tuition/{{tuition.id}}" method="POST" style="display: inline;">
+    <button type="submit" class="btn btn-primary">確認學費表</button>
+  </form>
+  <p class="mx-2 my-2" style="color: brown;">*確認學費表並建立收費紀錄</p>
+</div>
