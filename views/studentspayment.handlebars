@@ -19,6 +19,7 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <th scope="col">
+        <a href="/cramschool/tuition/courses/{{../course.id}}/students/{{this.id}}" class="btn-sm btn-secondary">歷期學費列表</a>
         <a href="/cramschool/payment/courses/{{../course.id}}/enrollment/{{this.Enrollment.id}}" class="btn-sm btn-dark">查看收費紀錄</a>
       </th>
     </tr>

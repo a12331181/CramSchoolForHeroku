@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       Course.hasMany(models.Calendar)
       Course.hasMany(models.Diary)
+      Course.hasMany(models.Tuition)
     }
   };
   Course.init({

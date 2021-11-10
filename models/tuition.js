@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'TuitionId',
         as: 'RequiredFee'
       })
+      Tuition.belongsTo(models.Course)
+      Tuition.belongsTo(models.Student)
     }
   };
   Tuition.init({
