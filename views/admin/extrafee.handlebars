@@ -1,0 +1,54 @@
+<br />
+
+<h1>資料管理後台</h1>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/cramschool">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/courses">課程列表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/teachers">教師列表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/students">學生列表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/admin/extrafees">額外費用列表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">使用者管理</a>
+  </li>
+</ul>
+
+<table class="table table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">費用名稱</th>
+      <th scope="col">價格</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each extrafees}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.price}}</td>
+      <td>
+        <a href="/admin/extrafees/{{this.id}}/edit">修改</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<br />
+<br />
+
+<a href='/admin/extrafees/create'>
+  <button type="button" class="btn btn-primary">建立新的額外費用</button>
+</a>

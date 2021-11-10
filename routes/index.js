@@ -87,6 +87,12 @@ module.exports = (app, passport) => {
   app.delete('/admin/courses/:id/calendar', authenticatedAdmin, adminController.deleteCalendars)
   app.put('/admin/courses/:courseId/calendar/:calendarId/close', authenticatedAdmin, adminController.closeCalendar)
   app.put('/admin/courses/:courseId/calendar/:calendarId/open', authenticatedAdmin, adminController.openCalendar)
+  //admin extrafee 相關路由 
+  app.get('/admin/extrafees', authenticatedAdmin, adminController.getExtraFees)
+  app.get('/admin/extrafees/create', authenticatedAdmin, adminController.getCreateExtraFeePage)
+  app.post('/admin/extrafees', authenticatedAdmin, adminController.postExtraFee)
+  app.get('/admin/extrafees/:id/edit', authenticatedAdmin, adminController.getEditExtraFeePage)
+  app.put('/admin/extrafees/:id', authenticatedAdmin, adminController.putExtraFee)
   //admin teacher 相關路由
   app.get('/admin/teachers', authenticatedAdmin, adminController.getTeachers)
   app.get('/admin/teachers/:id', authenticatedAdmin, adminController.getTeacher)

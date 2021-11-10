@@ -6,6 +6,7 @@ const Student = db.Student
 const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const Attend = db.Attend
+const ExtraFee = db.ExtraFee
 const fs = require('fs')
 const moment = require('moment')
 const pageLimit = 12
@@ -15,6 +16,7 @@ const adminController = {
   getSchoolIndexPage: (req, res) => {
     return res.render('admin/cramschool')
   },
+
   // 課程相關程式碼
   getCourses : (req, res) => {
     let offset = 0
@@ -43,6 +45,7 @@ const adminController = {
       })
     })
   },
+
   getCreateCoursePage: (req, res) => {
     const typeList = [
       { id: 1, type: '依堂數計費' },
@@ -64,6 +67,7 @@ const adminController = {
       })
     })
   },
+
   postCourse: (req, res) => {
     return Course.create({
       name: req.body.name,
@@ -91,6 +95,7 @@ const adminController = {
       }) 
     })
   },
+
   editCourse: (req, res) => {
     const typeList = [
       { id: 1, type: '依堂數計費' },
@@ -124,6 +129,7 @@ const adminController = {
       }
     })
   },
+
   putCourse: (req, res) => {
     return Course.findByPk(req.params.id)
       .then((course) => {
@@ -141,6 +147,7 @@ const adminController = {
         })
       })
   },
+
   deleteCourse: (req, res) => {
     Course.findByPk(req.params.id, {
       include: { model: Calendar, where: { isActive: false }}
@@ -158,6 +165,7 @@ const adminController = {
       }
     })
   },
+
   closeCourse: (req, res) => {
     Course.findByPk(req.params.id)
       .then(course => {
@@ -169,6 +177,7 @@ const adminController = {
         })
     })
   },
+
   openCourse: (req, res) => {
     Course.findByPk(req.params.id)
       .then(course => {
@@ -180,6 +189,7 @@ const adminController = {
         })
     })
   },
+
   // 課程行事曆相關程式碼
   getCalendar : (req, res) => {
     let offset = 0
@@ -232,6 +242,7 @@ const adminController = {
       }
     })
   },
+
   postNextPeriodCalendar: (req, res) => {
     Calendar.max('period', {
       where: {
@@ -275,6 +286,7 @@ const adminController = {
       })
     })
   },
+
   editCalendar: (req, res) => {
     Calendar.findByPk(req.params.calendarId, {
       include: [Course]
@@ -293,6 +305,7 @@ const adminController = {
       }
     })
   },
+
   putCalendar: (req, res) => {
     return Calendar.findByPk(req.params.calendarId)
       .then((calendar) => {
@@ -307,6 +320,7 @@ const adminController = {
         })
       })
   },
+
   deleteCalendars: (req, res) => {
     Calendar.max('period', {
       where: {
@@ -338,6 +352,7 @@ const adminController = {
       })
     })
   },
+
   closeCalendar: (req, res) => {
     Calendar.findByPk(req.params.calendarId)
       .then(calendar => {
@@ -349,6 +364,7 @@ const adminController = {
         })
     })
   },
+
   openCalendar: (req, res) => {
     Calendar.findByPk(req.params.calendarId)
       .then(calendar => {
@@ -360,12 +376,14 @@ const adminController = {
         })
     })
   },
+
   // 使用者相關程式碼
   getUsers: (req, res) => {
     return User.findAll({raw: true}).then(users => {
       return res.render('admin/users', { users: users })
     })
   },
+
   toggleAdmin: (req, res) => {
     return User.findByPk(req.params.id)
       .then((user) => {
@@ -378,6 +396,7 @@ const adminController = {
         })
       })
   },
+
   // 老師相關程式碼
   getTeachers: (req, res) => {
     let offset = 0
@@ -441,6 +460,7 @@ const adminController = {
       })
     }
   },
+
   getTeacher: (req, res) => {
     return Teacher.findByPk(req.params.id, {
       raw:true,
@@ -457,6 +477,7 @@ const adminController = {
       }
     })
   },
+
   editTeacher: (req, res) => {
     return Teacher.findByPk(req.params.id, {
       raw: true,
@@ -483,6 +504,7 @@ const adminController = {
       }
     })
   },
+
   putTeacher: (req, res) => {
     return Teacher.findByPk(req.params.id)
       .then((teacher) => {
@@ -502,6 +524,7 @@ const adminController = {
         })
       })
   },
+
   // 學生相關程式碼
   getStudents: (req, res) => {
     let offset = 0
@@ -570,6 +593,7 @@ const adminController = {
       })
     }
   },
+
   getCreateStudentPage: (req, res) => {
     const sexList = [
       { id: 1, sex: '男' },
@@ -597,6 +621,7 @@ const adminController = {
       gradeList: gradeList
     })
   },
+
   postStudent: (req, res) => {
     file = req.file
     if (file) {
@@ -636,6 +661,7 @@ const adminController = {
       })
     }
   },
+
   getStudent: (req, res) => {
     Student.findByPk(req.params.id, {
       raw: true,
@@ -651,6 +677,7 @@ const adminController = {
       }
     })
   },
+
   editStudent: (req, res) => {
     const sexList = [
       { id: 1, sex: '男' },
@@ -689,6 +716,7 @@ const adminController = {
       }
     })
   },
+
   putStudent: (req, res) => {
     const file = req.file
     if (file) {
@@ -734,6 +762,7 @@ const adminController = {
         })
     }
   },
+
   deleteStudent: (req, res) => {
     Attend.findAll({
       where: { StudentId: req.params.id }
@@ -755,6 +784,7 @@ const adminController = {
       }
     })
   },
+  
   enrollCoursePage: (req, res) => {
     Student.findByPk(req.params.id, {
       include: [ 
@@ -783,6 +813,7 @@ const adminController = {
       }
     })
   },
+
   addEnrollment: (req, res) => {
     return Enrollment.create({
       StudentId: req.params.studentId,
@@ -792,6 +823,7 @@ const adminController = {
       return res.redirect('back')
     })
   },
+
   removeEnrollment: (req, res) => {
     return Enrollment.findOne({
       where: {
@@ -805,7 +837,52 @@ const adminController = {
             return res.redirect('back')
           })
       })
-  }
+  },
+
+  getExtraFees: (req, res) => {
+    ExtraFee.findAll({
+      raw: true,
+      nest: true
+    }).then(extrafees => {
+      res.render('admin/extrafee', { extrafees: extrafees })
+    })
+  },
+
+  getCreateExtraFeePage: (req, res) => {
+    return res.render('admin/createextrafee')
+  },
+
+  getEditExtraFeePage: (req, res) => {
+    ExtraFee.findByPk(req.params.id, {
+      raw: true,
+      nest: true
+    }).then(extrafee => {
+      return res.render('admin/createextrafee', { extrafee: extrafee })
+    })
+  },
+
+  postExtraFee: (req, res) => {
+    ExtraFee.create({
+      name: req.body.name,
+      price: req.body.price,
+    }).then((extrafee) => {
+      req.flash('success_messages', '額外費用已成功被創建')
+      res.redirect('/admin/extrafees')
+    })
+  },
+
+  putExtraFee: (req, res) => {
+    ExtraFee.findByPk(req.params.id)
+      .then((extrafee) => {
+        extrafee.update({
+          name: req.body.name,
+          price: req.body.price
+        }).then(() => {
+          req.flash('success_messages', '已成功更新額外費用')
+          res.redirect('/admin/extrafees')
+        })
+      })
+  },
 }   
 
 module.exports = adminController
