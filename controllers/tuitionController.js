@@ -229,7 +229,21 @@ const tuitionController = {
         })
       })
     })
-  }
+  },
+
+  deleteTuition: (req, res) => {
+    Tuition.findByPk(req.params.id).then(tuition => {
+      Promise.all([
+        FeeList.destroy({ 
+          where: { TuitionId: tuition.dataValues.id }
+        }),
+        tuition.destroy()
+      ]).then(() => {
+        req.flash('success_messages', '成功刪除費用表')
+        return res.redirect('back')
+      })
+    })
+  },
 }
 
 module.exports = tuitionController
