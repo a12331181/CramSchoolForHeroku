@@ -17,25 +17,28 @@ const tuitionController = {
         include: [Payment],
         where: { StudentId: req.params.studentId, CourseId: req.params.courseId },
       }),
-      Course.findByPk(req.params.courseId, {
-        raw: true,
-        nest: true
+      Course.findOne({
+        where: { id: req.params.courseId, isActive: true }
       }),
-      Student.findByPk(req.params.studentId, {
-        raw: true,
-        nest: true
+      Student.findOne({
+        where: { id: req.params.studentId, status: 1 }
       })
     ]).then(([tuitions, course, student]) => {
-      let tuitionNotExist = false
-      if (tuitions.length === 0) {
-        tuitionNotExist = true
+      if (course === null || student === null) {
+        console.log('Not found!')
+        res.redirect('/cramschool/payment')
+      } else {
+        let tuitionNotExist = false
+        if (tuitions.length === 0) {
+          tuitionNotExist = true
+        }
+        return res.render('tuition', {
+          tuitions: tuitions,
+          course: course.toJSON(),
+          student: student.toJSON(),
+          tuitionNotExist: tuitionNotExist
+        })
       }
-      return res.render('tuition', {
-        tuitions: tuitions,
-        course: course,
-        student: student,
-        tuitionNotExist: tuitionNotExist
-      })
     })
   },
   
@@ -131,9 +134,8 @@ const tuitionController = {
         raw: true,
         nest: true
       }),
-      Tuition.findByPk(req.params.id, {
-        raw: true,
-        nest: true,
+      Tuition.findOne({
+        where: { id :req.params.id },
         include: [Course]
       }),
       Tuition.findByPk(req.params.id, {
@@ -145,30 +147,35 @@ const tuitionController = {
         include: [Student]
       }),
     ]).then(([extrafees, tuition, tuitionFees, tuitionStudent]) => {
-      const data = extrafees.map(r => ({
-        ...r,
-        isExisted: !tuitionFees.RequiredFee.map(d => d.id).includes(r.id)
-      }))
-      let total = tuition.Course.price
-      let fees = tuitionFees.RequiredFee.map(r => r.dataValues)
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].isExisted === false) {
-          total += data[i].price
+      if (tuition === null) {
+        console.log('Not found!')
+        res.redirect('/cramschool/payment')
+      } else {
+        const data = extrafees.map(r => ({
+          ...r,
+          isExisted: !tuitionFees.RequiredFee.map(d => d.id).includes(r.id)
+        }))
+        let total = tuition.Course.price
+        let fees = tuitionFees.RequiredFee.map(r => r.dataValues)
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].isExisted === false) {
+            total += data[i].price
+          }
         }
+        Tuition.findByPk(req.params.id).then(editamounts => {
+          editamounts.update({
+            amounts: total
+          })
+        }).then(() => {
+          return res.render('edittuition', { 
+            extrafees: data,
+            tuition: tuition.toJSON(),
+            tuitionFees: fees,
+            total: total,
+            tuitionStudent: tuitionStudent
+          })
+        }) 
       }
-      Tuition.findByPk(req.params.id).then(editamounts => {
-        editamounts.update({
-          amounts: total
-        })
-      }).then(() => {
-        return res.render('edittuition', { 
-          extrafees: data,
-          tuition: tuition,
-          tuitionFees: fees,
-          total: total,
-          tuitionStudent: tuitionStudent
-        })
-      }) 
     })
   },
 
@@ -253,14 +260,17 @@ const tuitionController = {
         include: [Payment]
       })
     ]).then(([tuition, tuitionCourse, tuitionStudent, tuitionPayment]) => {
-      if (tuitionPayment.Payment.id === null) {
+      if (tuition === null) {
         return res.redirect('/cramschool/payment')
+      } else if (tuitionPayment.Payment.id === null ) {
+        return res.redirect('/cramschool/payment')
+      } else {
+        return res.render('tuitiondetail', {
+          tuition: tuition,
+          tuitionCourse: tuitionCourse,
+          tuitionStudent: tuitionStudent
+        })
       }
-      return res.render('tuitiondetail', {
-        tuition: tuition,
-        tuitionCourse: tuitionCourse,
-        tuitionStudent: tuitionStudent
-      })
     })
   },
 
