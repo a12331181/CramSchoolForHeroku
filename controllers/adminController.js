@@ -735,9 +735,21 @@ const adminController = {
                 address: req.body.address,
                 image: file ? `/upload/${file.originalname}` : student.image,
                 status: req.body.status,
-              }).then((student) => {
-                req.flash('success_messages', '成功更新學生資料')
-                return res.redirect('/admin/students')
+              }).then(() => {
+                console.log(student)
+                if (student.dataValues.status === '2') {
+                  Enrollment.destroy({
+                    where: {
+                      StudentId: student.dataValues.id
+                    }
+                  }).then(() => {
+                    req.flash('success_messages', '成功更新學生資料及刪除所有註冊課程')
+                    return res.redirect('/admin/students')
+                  })
+                } else {
+                  req.flash('success_messages', '成功更新學生資料')
+                  return res.redirect('/admin/students')
+                }
               })
             })
         })
@@ -755,9 +767,21 @@ const adminController = {
             address: req.body.address,
             image: student.image,
             status: req.body.status,
-          }).then((student) => {
-            req.flash('success_messages', '成功更新學生資料')
-            return res.redirect('/admin/students')
+          }).then(() => {
+            console.log(typeof(student.dataValues.status))
+            if (student.dataValues.status === '2') {
+              Enrollment.destroy({
+                where: {
+                  StudentId: student.dataValues.id
+                }
+              }).then(() => {
+                req.flash('success_messages', '成功更新學生資料及刪除所有註冊課程')
+                return res.redirect('/admin/students')
+              })
+            } else {
+              req.flash('success_messages', '成功更新學生資料')
+              return res.redirect('/admin/students')
+            }
           })
         })
     }

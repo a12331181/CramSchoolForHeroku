@@ -90,6 +90,7 @@ const studentController = {
         const enrolledCourses = student.EnrolledCourses.map(r => ({
           ...r.dataValues
         }))
+        console.log(enrolledCourses)
         return res.render('student', { student: student.toJSON(), enrolledCourses: enrolledCourses })
       } 
     })

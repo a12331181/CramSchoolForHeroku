@@ -21,7 +21,7 @@ const schoolController = {
         raw: true,
         nest: true,
         limit: 4,
-        include: [{ model: Course, include: [{ model: Teacher}] }],
+        include: [{ model: Course, where: {isActive: true }, include: [{ model: Teacher}] }],
         order: [['createdAt', 'DESC']]
       }),
     ]).then(([meetings, diaries]) => {
@@ -97,7 +97,7 @@ const schoolController = {
   getCourseEnrolledStudents: (req, res) => {
     Course.findOne({
       where: { id: req.params.id, isActive: true },
-      include: [{ model: Student, as: 'EnrolledStudents' }]
+      include: [{ model: Student, as: 'EnrolledStudents', where: { status: 1 }}]
     }).then(course => {
       if (course === null) {
         console.log('Not found!')
@@ -208,7 +208,7 @@ const schoolController = {
     Diary.findAndCountAll({ 
       raw: true,
       nest: true,
-      include: [{ model: Course, include: [{ model: Teacher}] }],
+      include: [{ model: Course, where: { isActive: true }, include: [{ model: Teacher }] }],
       offset: offset,
       limit: pageLimit,
       order: [['createdAt', 'DESC']]
