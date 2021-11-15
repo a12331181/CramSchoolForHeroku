@@ -736,7 +736,6 @@ const adminController = {
                 image: file ? `/upload/${file.originalname}` : student.image,
                 status: req.body.status,
               }).then(() => {
-                console.log(student)
                 if (student.dataValues.status === '2') {
                   Enrollment.destroy({
                     where: {
@@ -768,7 +767,6 @@ const adminController = {
             image: student.image,
             status: req.body.status,
           }).then(() => {
-            console.log(typeof(student.dataValues.status))
             if (student.dataValues.status === '2') {
               Enrollment.destroy({
                 where: {

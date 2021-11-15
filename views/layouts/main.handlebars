@@ -17,11 +17,11 @@
       <ul class="navbar-nav mr-auto">
       </ul>
       <div>
-        <a href="/cramschool/introduction" style="color: white;margin-right: 10px;">關於</a>
         {{#if user.isAdmin}}
         <a href="/admin" style="color: white;margin-right: 10px;">後台管理</a>
         {{/if}}
         {{#if user}}
+        <a href="/cramschool/introduction" style="color: white;margin-right: 10px;">關於</a>
         <span style="color: white;margin-right: 10px;"><strong>Hi, {{user.name}}</strong></span>
         <a href="/users/{{user.id}}" style="color: white;margin-right: 10px;">個人資料</a>
         <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">登出</button></a>
