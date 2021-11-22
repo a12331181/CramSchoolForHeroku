@@ -3,7 +3,8 @@ const db = require('../models')
 const User = db.User
 const Teacher = db.Teacher
 const Course = db.Course
-const fs = require('fs')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = 'b5d38e5bb6c1d13'
 
 const userController = {
   signUpPage: (req, res) => {
@@ -106,24 +107,22 @@ const userController = {
   putUser: (req, res) => {
     const file = req.file
     if (file) {
-      fs.readFile(file.path, (err, data) => {
-        if (err) console.log('Error: ', err)
-        fs.writeFile(`upload/${file.originalname}`, data, () => {
-          return Teacher.findOne({ where: { UserId : req.user.id } })
-            .then((teacher) => {
-              teacher.update({
-                name: req.body.name,
-                sex: req.body.sex,
-                birth: req.body.birth,
-                phone: req.body.phone,
-                address: req.body.address,
-                education: req.body.education,
-                school: req.body.school,
-                image: file ? `/upload/${file.originalname}` : teacher.image
-              }).then((teacher) => {
-                req.flash('success_messages', 'user was successfully to update')
-                res.redirect('/')
-              })
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return Teacher.findOne({ where: { UserId : req.user.id } })
+          .then((teacher) => {
+            teacher.update({
+              name: req.body.name,
+              sex: req.body.sex,
+              birth: req.body.birth,
+              phone: req.body.phone,
+              address: req.body.address,
+              education: req.body.education,
+              school: req.body.school,
+              image: file ? img.data.link : teacher.image,
+            }).then((teacher) => {
+              req.flash('success_messages', 'user was successfully to update')
+              res.redirect('/')
             })
         })
       })

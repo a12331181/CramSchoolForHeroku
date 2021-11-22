@@ -7,9 +7,10 @@ const Enrollment = db.Enrollment
 const Calendar = db.Calendar
 const Attend = db.Attend
 const ExtraFee = db.ExtraFee
-const fs = require('fs')
 const moment = require('moment')
 const pageLimit = 12
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = 'b5d38e5bb6c1d13'
 
 const adminController = {
   // 後臺首頁
@@ -625,23 +626,21 @@ const adminController = {
   postStudent: (req, res) => {
     file = req.file
     if (file) {
-      fs.readFile(file.path, (err, data) => {
-        if (err) console.log('Error: ', err)
-        fs.writeFile(`upload/${file.originalname}`, data, () => {
-          return Student.create({
-            name: req.body.name,
-            sex: req.body.sex,
-            birth: req.body.birth,
-            school: req.body.school,
-            grade: req.body.grade,
-            tel: req.body.tel,
-            address: req.body.address,
-            image: file ? `/upload/${file.originalname}` : null,
-            status: req.body.status,
-          }).then((student) => {
-            req.flash('success_messages', '成功建立學生資料')
-            return res.redirect('/admin/students')
-          })
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return Student.create({
+          name: req.body.name,
+          sex: req.body.sex,
+          birth: req.body.birth,
+          school: req.body.school,
+          grade: req.body.grade,
+          tel: req.body.tel,
+          address: req.body.address,
+          image: file ? img.data.link : null,
+          status: req.body.status,
+        }).then((student) => {
+          req.flash('success_messages', '成功建立學生資料')
+          return res.redirect('/admin/students')
         })
       })
     } else {      
@@ -720,38 +719,36 @@ const adminController = {
   putStudent: (req, res) => {
     const file = req.file
     if (file) {
-      fs.readFile(file.path, (err, data) => {
-        if (err) console.log('Error: ', err)
-        fs.writeFile(`upload/${file.originalname}`, data, () => {
-          return Student.findByPk(req.params.id)
-            .then((student) => {
-              student.update({
-                name: req.body.name,
-                sex: req.body.sex,
-                birth: req.body.birth,
-                school: req.body.school,
-                grade: req.body.grade,
-                tel: req.body.tel,
-                address: req.body.address,
-                image: file ? `/upload/${file.originalname}` : student.image,
-                status: req.body.status,
-              }).then(() => {
-                if (student.dataValues.status === '2') {
-                  Enrollment.destroy({
-                    where: {
-                      StudentId: student.dataValues.id
-                    }
-                  }).then(() => {
-                    req.flash('success_messages', '成功更新學生資料及刪除所有註冊課程')
-                    return res.redirect('/admin/students')
-                  })
-                } else {
-                  req.flash('success_messages', '成功更新學生資料')
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        return Student.findByPk(req.params.id)
+          .then((student) => {
+            student.update({
+              name: req.body.name,
+              sex: req.body.sex,
+              birth: req.body.birth,
+              school: req.body.school,
+              grade: req.body.grade,
+              tel: req.body.tel,
+              address: req.body.address,
+              image: file ? img.data.link : student.image,
+              status: req.body.status,
+            }).then(() => {
+              if (student.dataValues.status === '2') {
+                Enrollment.destroy({
+                  where: {
+                    StudentId: student.dataValues.id
+                  }
+                }).then(() => {
+                  req.flash('success_messages', '成功更新學生資料及刪除所有註冊課程')
                   return res.redirect('/admin/students')
-                }
-              })
+                })
+              } else {
+                req.flash('success_messages', '成功更新學生資料')
+                return res.redirect('/admin/students')
+              }
             })
-        })
+          })
       })
     } else {
       return Student.findByPk(req.params.id)
