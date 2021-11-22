@@ -4,7 +4,7 @@ const User = db.User
 const Teacher = db.Teacher
 const Course = db.Course
 const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = 'b5d38e5bb6c1d13'
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
   signUpPage: (req, res) => {

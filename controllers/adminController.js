@@ -10,7 +10,7 @@ const ExtraFee = db.ExtraFee
 const moment = require('moment')
 const pageLimit = 12
 const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = 'b5d38e5bb6c1d13'
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const adminController = {
   // 後臺首頁
